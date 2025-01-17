@@ -4,8 +4,8 @@ from io import BytesIO
 
 # Function to transform the data
 def transform_data(file):
-    # Load raw data from Excel
-    df = pd.read_excel(file, header=None)
+    # Ensure the file is read properly as a BytesIO object
+    df = pd.read_excel(file, header=None, engine="openpyxl")
 
     # Step 1: Delete unwanted columns (2, 3, 6, 7, 8 -> index 1, 2, 5, 6, 7)
     df.drop(columns=[1, 2, 5, 6, 7], inplace=True)
@@ -59,29 +59,32 @@ uploaded_file = st.file_uploader("Upload your raw data file (Excel format)", typ
 
 if uploaded_file:
     # Transform the uploaded file
-    transformed_data = transform_data(uploaded_file)
+    try:
+        transformed_data = transform_data(uploaded_file)
 
-    # Save the transformed data to a BytesIO object
-    output = BytesIO()
-    with pd.ExcelWriter(output, engine="openpyxl") as writer:
-        transformed_data.to_excel(writer, index=False, sheet_name="Transformed Data")
-        workbook = writer.book
-        worksheet = writer.sheets["Transformed Data"]
+        # Save the transformed data to a BytesIO object
+        output = BytesIO()
+        with pd.ExcelWriter(output, engine="openpyxl") as writer:
+            transformed_data.to_excel(writer, index=False, sheet_name="Transformed Data")
+            workbook = writer.book
+            worksheet = writer.sheets["Transformed Data"]
 
-        # Format headers with blue fill and white font
-        from openpyxl.styles import PatternFill, Font
-        header_fill = PatternFill(start_color="0000FF", end_color="0000FF", fill_type="solid")
-        header_font = Font(color="FFFFFF", bold=True)
-        for cell in worksheet[1]:  # First row (headers)
-            cell.fill = header_fill
-            cell.font = header_font
+            # Format headers with blue fill and white font
+            from openpyxl.styles import PatternFill, Font
+            header_fill = PatternFill(start_color="0000FF", end_color="0000FF", fill_type="solid")
+            header_font = Font(color="FFFFFF", bold=True)
+            for cell in worksheet[1]:  # First row (headers)
+                cell.fill = header_fill
+                cell.font = header_font
 
-    # Convert BytesIO to downloadable file
-    output.seek(0)
-    st.success("File transformed successfully!")
-    st.download_button(
-        label="Download Transformed File",
-        data=output,
-        file_name="transformed_data.xlsx",
-        mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-    )
+        # Convert BytesIO to downloadable file
+        output.seek(0)
+        st.success("File transformed successfully!")
+        st.download_button(
+            label="Download Transformed File",
+            data=output,
+            file_name="transformed_data.xlsx",
+            mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+        )
+    except Exception as e:
+        st.error(f"An error occurred: {e}")
