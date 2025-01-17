@@ -71,7 +71,7 @@ if uploaded_file:
 
             # Format headers with blue fill and white font
             from openpyxl.styles import PatternFill, Font
-            header_fill = PatternFill(start_color="A1CAF1", end_color="A1CAF1", fill_type="solid")
+            header_fill = PatternFill(start_color="4B9CD3", end_color="4B9CD3", fill_type="solid")
             header_font = Font(color="FFFFFF", bold=True)
             for cell in worksheet[1]:  # First row (headers)
                 cell.fill = header_fill
