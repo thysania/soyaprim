@@ -71,7 +71,7 @@ if uploaded_file:
 
             # Aooly formatting to the "Date" column
             from openpyxl.styles.numbers import FORMAT_DATE_DMYSLASH
-            for col in worksheet.inter_cols(min_col=1, max_row=worksheet.max_row):
+            for col in worksheet.iter_cols(min_col=1, max_row=worksheet.max_row):
                 for cell in col:
                     cell.number_format = FORMAT_DATE_DMYSLASH #Set date format as dd/mm/yyyy
           
