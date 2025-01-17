@@ -69,7 +69,13 @@ if uploaded_file:
             workbook = writer.book
             worksheet = writer.sheets["Transformed Data"]
 
-            # Format headers with blue fill and white font
+            # Aooly formatting to the "Date" column
+            from openpyxl.styles.numbers import FORMAT_DATE_DMYSLASH
+            for col in worksheet.inter_cols(min_col=1, max_row=worksheet.max_row):
+                for cell in col:
+                    cell.number_format = FORMAT_DATE_DMYSLASH #Set date format as dd/mm/yyyy
+          
+            # Style headers
             from openpyxl.styles import PatternFill, Font
             header_fill = PatternFill(start_color="4B9CD3", end_color="4B9CD3", fill_type="solid")
             header_font = Font(color="FFFFFF", bold=True)
