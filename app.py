@@ -14,7 +14,7 @@ def transform_data(file):
     df.columns = ["Date", "PRODUIT", "TIERS", "TTC"]
 
     # Step 3: Add empty columns
-    empty_columns = ["N FAC", "IF", "ICE", "MODE REGL", "TAUX TVA", "JOURNAL TRESORIE"]
+    empty_columns = ["N FAC", "IF", "ICE", "MODE REGL", "DATE REGL", "TAUX TVA", "JOURNAL TRESORIE"]
     for col in empty_columns:
         df[col] = ""
 
