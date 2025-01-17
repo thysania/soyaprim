@@ -52,10 +52,10 @@ def transform_data(file):
     return df
 
 # Streamlit app
-st.title("Excel Data Transformation App")
+st.title("SOYAPRIM Data Transformation App")
 
 # File upload
-uploaded_file = st.file_uploader("Upload your raw data file (Excel format)", type=["xlsx", "xls"])
+uploaded_file = st.file_uploader("Upload your data file (Excel format)", type=["xlsx", "xls"])
 
 if uploaded_file:
     # Transform the uploaded file
@@ -71,7 +71,7 @@ if uploaded_file:
 
             # Format headers with blue fill and white font
             from openpyxl.styles import PatternFill, Font
-            header_fill = PatternFill(start_color="0000FF", end_color="0000FF", fill_type="solid")
+            header_fill = PatternFill(start_color="A1CAF1", end_color="A1CAF1", fill_type="solid")
             header_font = Font(color="FFFFFF", bold=True)
             for cell in worksheet[1]:  # First row (headers)
                 cell.fill = header_fill
@@ -79,11 +79,11 @@ if uploaded_file:
 
         # Convert BytesIO to downloadable file
         output.seek(0)
-        st.success("File transformed successfully!")
+        st.success("File transformed successfully! :)")
         st.download_button(
-            label="Download Transformed File",
+            label="Telecharger le fichier",
             data=output,
-            file_name="transformed_data.xlsx",
+            file_name="Soyaprim_Import.xlsx",
             mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
         )
     except Exception as e:
