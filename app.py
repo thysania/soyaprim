@@ -53,7 +53,7 @@ def transform_data(file):
     
 # Streamlit app
 st.title("SOYAPRIM Data Transformation")
-
+st.title("SOYAPRIM Data Transformation")
 # File upload
 uploaded_file = st.file_uploader("Upload your data file (Excel format)", type=["xlsx", "xls"])
 uploaded_file2 = st.file_uploader("Upload your data file (Excel format)", type=["xlsx", "xls"])
