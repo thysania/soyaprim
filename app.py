@@ -94,3 +94,41 @@ if uploaded_file:
         )
     except Exception as e:
         st.error(f"An error occurred: {e}")
+        
+if uploaded_file2:
+    # Transform the uploaded file
+    try:
+        transformed_data = transform_data(uploaded_file2)
+
+        # Save the transformed data to a BytesIO object
+        output = BytesIO()
+        with pd.ExcelWriter(output, engine="openpyxl") as writer:
+            transformed_data.to_excel(writer, index=False, sheet_name="Transformed Data")
+            workbook = writer.book
+            worksheet = writer.sheets["Transformed Data"]
+
+            # Aooly formatting to the "Date" column
+            from openpyxl.styles.numbers import FORMAT_DATE_DMYSLASH
+            for col in worksheet.iter_cols(min_col=1, max_col=1, min_row=2, max_row=worksheet.max_row):
+                for cell in col:
+                    cell.number_format = FORMAT_DATE_DMYSLASH #Set date format as dd/mm/yyyy
+          
+            # Style headers
+            from openpyxl.styles import PatternFill, Font
+            header_fill = PatternFill(start_color="4B9CD3", end_color="4B9CD3", fill_type="solid")
+            header_font = Font(color="FFFFFF", bold=True)
+            for cell in worksheet[1]:  # First row (headers)
+                cell.fill = header_fill
+                cell.font = header_font
+
+        # Convert BytesIO to downloadable file
+        output.seek(0)
+        st.success("File transformed successfully! :)")
+        st.download_button(
+            label="Telecharger le fichier",
+            data=output,
+            file_name="Soyaprim_Import.xlsx",
+            mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+        )
+    except Exception as e:
+        st.error(f"An error occurred: {e}")
