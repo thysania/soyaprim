@@ -1,134 +1,106 @@
-import pandas as pd
 import streamlit as st
+import pandas as pd
+import numpy as np
 from io import BytesIO
 
-# Function to transform the data
-def transform_data(file):
-    # Ensure the file is read properly as a BytesIO object
-    df = pd.read_excel(file, header=None, engine="openpyxl")
+# Page title
+st.title("Excel Data Transformation App")
+st.write("Upload your raw Excel file and download the transformed data.")
 
-    # Step 1: Delete unwanted columns (2, 3, 6, 7, 8 -> index 1, 2, 5, 6, 7)
-    df.drop(columns=[1, 2, 5, 6, 7], inplace=True)
-
-    # Step 2: Rename the remaining columns
-    df.columns = ["Date", "PRODUIT", "TIERS", "TTC"]
-
-    # Step 3: Add empty columns
-    empty_columns = ["N FAC", "IF", "ICE", "MODE REGL", "DATE REGL", "TAUX TVA", "JOURNAL TRESORIE"]
-    for col in empty_columns:
-        df[col] = ""
-
-    # Step 4: Add columns with default 0 value
-    zero_columns = ["TVA", "CPT TVA"]
-    for col in zero_columns:
-        df[col] = 0
-
-    # Step 5: Add "CPT HT" column with value 6111000000
-    df["CPT HT"] = 6111000000
-
-    # Step 6: Duplicate "TTC" column as "HT"
-    df["HT"] = df["TTC"]
-
-    # Step 7: Add "DESIGNATION" column as concatenation of "PRODUIT / TIERS" and delete "PRODUIT"
-    df["DESIGNATION"] = df["PRODUIT"] + " / " + df["TIERS"]
-    df.drop(columns=["PRODUIT"], inplace=True)
-
-    # Step 8: Rearrange columns in the desired order and set data types
-    columns_order = [
-        "Date", "N FAC", "TIERS", "IF", "ICE", "DESIGNATION",
-        "TTC", "HT", "TVA", "MODE REGL", "DATE REGL", "CPT HT",
-        "CPT TVA", "TAUX TVA", "JOURNAL TRESORIE"
-    ]
-    df = df[columns_order]
-
-    # Convert data types
-    df["Date"] = pd.to_datetime(df["Date"], errors="coerce")  # Set invalid dates as NaT
-    df["TIERS"] = df["TIERS"].astype(str)
-    df["DESIGNATION"] = df["DESIGNATION"].astype(str)
-    df["TTC"] = df["TTC"].astype(float)
-    df["HT"] = df["HT"].astype(float)
-    df["CPT HT"] = df["CPT HT"].astype(int)
-
-    return df
-    
-# Streamlit app
-st.title("SOYAPRIM Data Transformation")
-st.title("SOYAPRIM Data Transformation")
 # File upload
-uploaded_file = st.file_uploader("Upload your data file (Excel format)", type=["xlsx", "xls"])
-uploaded_file2 = st.file_uploader("Upload your data file (Excel format)", type=["xlsx", "xls"])
-if uploaded_file:
-    # Transform the uploaded file
-    try:
-        transformed_data = transform_data(uploaded_file)
+uploaded_file = st.file_uploader("Upload your raw Excel file", type=["xlsx"])
 
-        # Save the transformed data to a BytesIO object
-        output = BytesIO()
-        with pd.ExcelWriter(output, engine="openpyxl") as writer:
-            transformed_data.to_excel(writer, index=False, sheet_name="Transformed Data")
-            workbook = writer.book
-            worksheet = writer.sheets["Transformed Data"]
+if uploaded_file is not None:
+    # Read raw data (Sheet 1) and mappings (Sheet 2)
+    raw_df = pd.read_excel(uploaded_file, sheet_name=0, header=None)
+    mappings_df = pd.read_excel(uploaded_file, sheet_name=1, header=None)  # Assuming no headers in Sheet 2
 
-            # Aooly formatting to the "Date" column
-            from openpyxl.styles.numbers import FORMAT_DATE_DMYSLASH
-            for col in worksheet.iter_cols(min_col=1, max_col=1, min_row=2, max_row=worksheet.max_row):
-                for cell in col:
-                    cell.number_format = FORMAT_DATE_DMYSLASH #Set date format as dd/mm/yyyy
-          
-            # Style headers
-            from openpyxl.styles import PatternFill, Font
-            header_fill = PatternFill(start_color="4B9CD3", end_color="4B9CD3", fill_type="solid")
-            header_font = Font(color="FFFFFF", bold=True)
-            for cell in worksheet[1]:  # First row (headers)
-                cell.fill = header_fill
-                cell.font = header_font
+    # Assign column names to raw data (8 columns)
+    raw_df.columns = [
+        "DATE", "DROP", "RAW_LIB", "RAW_TIER", "RAW_REF", 
+        "DEBIT", "CREDIT", "NAT"
+    ]
+    raw_df = raw_df.drop(columns="DROP")  # Remove second column
 
-        # Convert BytesIO to downloadable file
-        output.seek(0)
-        st.success("File transformed successfully! :)")
-        st.download_button(
-            label="Telecharger le fichier",
-            data=output,
-            file_name="Soyaprim_Import.xlsx",
-            mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-        )
-    except Exception as e:
-        st.error(f"An error occurred: {e}")
-        
-if uploaded_file2:
-    # Transform the uploaded file
-    try:
-        transformed_data = transform_data(uploaded_file2)
+    # Process TIERS (lookup RAW_TIER as wildcard in mappings sheet)
+    def lookup_tiers(raw_tier):
+        if pd.isna(raw_tier):
+            return np.nan
+        # Find rows in mappings_df where the pattern matches RAW_TIER (wildcard)
+        matches = mappings_df[mappings_df[0].str.contains(raw_tier, case=False, na=False)]
+        if not matches.empty:
+            return matches.iloc[0, 1]  # Return the first matching value from column 1
+        return np.nan
 
-        # Save the transformed data to a BytesIO object
-        output = BytesIO()
-        with pd.ExcelWriter(output, engine="openpyxl") as writer:
-            transformed_data.to_excel(writer, index=False, sheet_name="Transformed Data")
-            workbook = writer.book
-            worksheet = writer.sheets["Transformed Data"]
+    raw_df["TIERS"] = raw_df["RAW_TIER"].apply(lookup_tiers)
 
-            # Aooly formatting to the "Date" column
-            from openpyxl.styles.numbers import FORMAT_DATE_DMYSLASH
-            for col in worksheet.iter_cols(min_col=1, max_col=1, min_row=2, max_row=worksheet.max_row):
-                for cell in col:
-                    cell.number_format = FORMAT_DATE_DMYSLASH #Set date format as dd/mm/yyyy
-          
-            # Style headers
-            from openpyxl.styles import PatternFill, Font
-            header_fill = PatternFill(start_color="4B9CD3", end_color="4B9CD3", fill_type="solid")
-            header_font = Font(color="FFFFFF", bold=True)
-            for cell in worksheet[1]:  # First row (headers)
-                cell.fill = header_fill
-                cell.font = header_font
+    # Process CPT (apply conditions)
+    conditions = [
+        # Rule 1: RAW_TIER starts with "FRUL" (case-insensitive)
+        raw_df["RAW_TIER"].str.upper().str.startswith("FRUL"),
+        # Rule 2: RAW_FILTER starts with "SALAIRE" or NAT == "PAIE" (assuming RAW_FILTER is a typo for another column)
+        (raw_df["RAW_REF"].str.upper().str.startswith("SALAIRE")) | (raw_df["NAT"] == "PAIE"),  # Assuming RAW_FILTER typo
+        # Rule 3: RAW_TIER == "CNSS" or NAT == "COTIS"
+        (raw_df["RAW_TIER"].str.upper() == "CNSS") | (raw_df["NAT"] == "COTIS"),
+        # Rule 4: RAW_LIB starts with "Commis" or "Frais"
+        raw_df["RAW_LIB"].str.upper().str.startswith(("COMMIS", "FRAIS")),
+        # Rule 5: RAW_LIB starts with "diff" or contains "change"
+        raw_df["RAW_LIB"].str.upper().str.contains("DIFF") | raw_df["RAW_LIB"].str.upper().str.contains("CHANGE"),
+        # Rule 6: NAT == "FELAH" or TIERS contains specified strings
+        (raw_df["NAT"] == "FELAH") | raw_df["TIERS"].str.contains("|".join([
+            "ORANGE", "MAMDA", "ONSSA", "ASWAK", "BRICO", "CARREF", "WAFABAIL", 
+            "CABINET", "TRANS", "REDAL", "REFRI", "SECOLA", "DAKAR", "ATTIJARI", 
+            "TEMARA", "KPA", "EASY", "AJYAD", "BIOCI", "MUST", "SAIDOU", 
+            "BOUNMER", "PRINT", "MOGES", "FOURNI", "BOIS", "PLANEX"
+        ]), case=False, na=False)),
+        # Rule 7: Column CA (assumed to be CREDIT column) equals 1
+        (raw_df["CREDIT"] == 1)
+    ]
 
-        # Convert BytesIO to downloadable file
-        output.seek(0)
-        st.success("File transformed successfully! :)")
-        st.download_button(
-            label="Telecharger le fichier",
-            data=output,
-            file_name="Soyaprim_Import.xlsx",
-            mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-        )
-    except Exception as e:
-        st.error(f"An error occurred: {e}")
+    choices = [
+        3421000000,  # Rule 1
+        4432000000,  # Rule 2
+        4441000000,  # Rule 3
+        6147300000,  # Rule 4
+        6331000000,  # Rule 5
+        4411000000,  # Rule 6
+        3497000000   # Rule 7
+    ]
+
+    raw_df["CPT"] = np.select(conditions, choices, default=np.nan).astype("Int64")
+
+    # Process LIB (concatenate RAW_LIB/NAT/RAW_TIER)
+    raw_df["LIB"] = (
+        raw_df["RAW_LIB"].astype(str) + "/" + 
+        raw_df["NAT"].astype(str) + "/" + 
+        raw_df["RAW_TIER"].astype(str)
+    )
+
+    # Create final DataFrame with specified columns and formatting
+    result_df = pd.DataFrame({
+        "DATE": pd.to_datetime(raw_df["DATE"]).dt.strftime("%d/%m/%Y"),
+        "N PIECE": np.nan,
+        "CPT": raw_df["CPT"],
+        "TIERS": raw_df["TIERS"].astype(str),
+        "LIB": raw_df["LIB"].astype(str),
+        "REF": np.nan,
+        "DEBIT": raw_df["DEBIT"].round(2),
+        "CREDIT": raw_df["CREDIT"].round(2)
+    })
+
+    # Show preview of the result
+    st.write("### Transformed Data Preview")
+    st.dataframe(result_df.head())
+
+    # Download button for the result
+    output = BytesIO()
+    with pd.ExcelWriter(output, engine="xlsxwriter") as writer:
+        result_df.to_excel(writer, index=False, sheet_name="Transformed Data")
+    output.seek(0)
+
+    st.download_button(
+        label="Download Transformed Data",
+        data=output,
+        file_name="transformed_data.xlsx",
+        mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+    )
