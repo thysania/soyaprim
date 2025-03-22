@@ -77,7 +77,7 @@ if uploaded_file is not None:
                 3497000000   # Rule 7
             ]
 
-            raw_df["CPT"] = np.select(conditions, choices, default=np.nan).astype("Int64")
+            raw_df["CPT"] = np.select(conditions, choices, default=np.nan).astype("Int")
 
             # Process LIB (concatenate RAW_LIB/NAT/RAW_TIER)
             raw_df["LIB"] = (
