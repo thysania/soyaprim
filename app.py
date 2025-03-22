@@ -61,7 +61,7 @@ if uploaded_file is not None:
                     "ORANGE", "MAMDA", "ONSSA", "ASWAK", "BRICO", "CARREF", "WAFABAIL", 
                     "CABINET", "TRANS", "REDAL", "REFRI", "SECOLA", "DAKAR", "ATTIJARI", 
                     "TEMARA", "KPA", "EASY", "AJYAD", "BIOCI", "MUST", "SAIDOU", 
-                    "BOUNMER", "PRINT", "MOGES", "FOURNI", "BOIS", "PLANEX"
+                    "BOUNMER", "PRINT", "MOGES", "FOURNI", "BOIS", "PLANEX", "SMURF"
                 ]), case=False, na=False),
                 # Rule 7: Column CA equals 1
                 (raw_df["CA"] == 1)
