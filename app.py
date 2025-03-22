@@ -19,6 +19,8 @@ if uploaded_file is not None:
         # Validate the number of columns in the raw file
         if raw_df.shape[1] != 9:
             st.error(f"Expected 9 columns in the raw file, but found {raw_df.shape[1]}. Please check the file structure.")
+        elif mappings_df.shape[1] < 2:
+            st.error(f"Expected at least 2 columns in the mappings sheet, but found {mappings_df.shape[1]}. Please check the file structure.")
         else:
             # Assign column names to raw data (9 columns)
             raw_df.columns = [
@@ -57,7 +59,7 @@ if uploaded_file is not None:
                     "CABINET", "TRANS", "REDAL", "REFRI", "SECOLA", "DAKAR", "ATTIJARI", 
                     "TEMARA", "KPA", "EASY", "AJYAD", "BIOCI", "MUST", "SAIDOU", 
                     "BOUNMER", "PRINT", "MOGES", "FOURNI", "BOIS", "PLANEX"
-                ]), case=False, na=False),
+                ]), case=False, na=False)),
                 # Rule 7: Column CA equals 1
                 (raw_df["CA"] == 1)
             ]
