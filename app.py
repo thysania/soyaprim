@@ -34,7 +34,7 @@ if uploaded_file is not None:
                 if pd.isna(raw_tier):
                     return np.nan
                 # Find rows in mappings_df where the pattern matches RAW_TIER (wildcard)
-                matches = mappings_df[mappings_df[0].str.contains(raw_tier, case=False, na=False)]
+                matches = mappings_df[mappings_df[0].astype(str).str.contains(raw_tier, case=False, na=False)]
                 if not matches.empty:
                     return matches.iloc[0, 1]  # Return the first matching value from column 1
                 return np.nan
@@ -42,19 +42,22 @@ if uploaded_file is not None:
             raw_df["TIERS"] = raw_df["RAW_TIER"].apply(lookup_tiers)
 
             # Process CPT (apply conditions)
+            # Ensure all conditions are boolean arrays
             conditions = [
                 # Rule 1: RAW_TIER starts with "FRUL" (case-insensitive)
-                raw_df["RAW_TIER"].str.upper().str.startswith("FRUL"),
+                raw_df["RAW_TIER"].astype(str).str.upper().str.startswith("FRUL", na=False),
                 # Rule 2: RAW_FILTER starts with "SALAIRE" or NAT == "PAIE" (assuming RAW_FILTER is a typo for another column)
-                (raw_df["RAW_REF"].str.upper().str.startswith("SALAIRE")) | (raw_df["NAT"] == "PAIE"),  # Assuming RAW_FILTER typo
+                (raw_df["RAW_REF"].astype(str).str.upper().str.startswith("SALAIRE", na=False)) | (raw_df["NAT"] == "PAIE"),
                 # Rule 3: RAW_TIER == "CNSS" or NAT == "COTIS"
-                (raw_df["RAW_TIER"].str.upper() == "CNSS") | (raw_df["NAT"] == "COTIS"),
+                (raw_df["RAW_TIER"].astype(str).str.upper() == "CNSS") | (raw_df["NAT"] == "COTIS"),
                 # Rule 4: RAW_LIB starts with "Commis" or "Frais"
-                raw_df["RAW_LIB"].str.upper().str.startswith(("COMMIS", "FRAIS")),
+                raw_df["RAW_LIB"].astype(str).str.upper().str.startswith(("COMMIS", "FRAIS"), na=False),
                 # Rule 5: RAW_LIB starts with "diff" or contains "change"
-                raw_df["RAW_LIB"].str.upper().str.contains("DIFF") | raw_df["RAW_LIB"].str.upper().str.contains("CHANGE"),
+                raw_df["RAW_LIB"].astype(str).str.upper().str.contains("DIFF", na=False) | 
+                raw_df["RAW_LIB"].astype(str).str.upper().str.contains("CHANGE", na=False),
                 # Rule 6: NAT == "FELAH" or TIERS contains specified strings
-                (raw_df["NAT"] == "FELAH") | raw_df["TIERS"].str.contains("|".join([
+                (raw_df["NAT"] == "FELAH") | 
+                raw_df["TIERS"].astype(str).str.contains("|".join([
                     "ORANGE", "MAMDA", "ONSSA", "ASWAK", "BRICO", "CARREF", "WAFABAIL", 
                     "CABINET", "TRANS", "REDAL", "REFRI", "SECOLA", "DAKAR", "ATTIJARI", 
                     "TEMARA", "KPA", "EASY", "AJYAD", "BIOCI", "MUST", "SAIDOU", 
