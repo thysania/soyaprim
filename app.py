@@ -52,7 +52,7 @@ if uploaded_file is not None:
             "CABINET", "TRANS", "REDAL", "REFRI", "SECOLA", "DAKAR", "ATTIJARI", 
             "TEMARA", "KPA", "EASY", "AJYAD", "BIOCI", "MUST", "SAIDOU", 
             "BOUNMER", "PRINT", "MOGES", "FOURNI", "BOIS", "PLANEX"
-        ]), case=False, na=False)),
+        ]), case=False, na=False),
         # Rule 7: Column CA (assumed to be CREDIT column) equals 1
         (raw_df["CREDIT"] == 1)
     ]
