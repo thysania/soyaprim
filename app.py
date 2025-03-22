@@ -18,7 +18,7 @@ if uploaded_file is not None:
     # Assign column names to raw data (8 columns)
     raw_df.columns = [
         "DATE", "DROP", "RAW_LIB", "RAW_TIER", "RAW_REF", 
-        "DEBIT", "CREDIT", "NAT"
+        "DEBIT", "CREDIT", "NAT", "CA"
     ]
     raw_df = raw_df.drop(columns="DROP")  # Remove second column
 
@@ -54,7 +54,7 @@ if uploaded_file is not None:
             "BOUNMER", "PRINT", "MOGES", "FOURNI", "BOIS", "PLANEX"
         ]), case=False, na=False),
         # Rule 7: Column CA (assumed to be CREDIT column) equals 1
-        (raw_df["CREDIT"] == 1)
+        (raw_df["CA"] == 1)
     ]
 
     choices = [
