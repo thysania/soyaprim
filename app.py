@@ -61,7 +61,7 @@ if uploaded_file is not None:
                     "ORANGE", "MAMDA", "ONSSA", "ASWAK", "BRICO", "CARREF", "WAFABAIL", 
                     "CABINET", "TRANS", "REDAL", "REFRI", "SECOLA", "DAKAR", "ATTIJARI", 
                     "TEMARA", "KPA", "EASY", "AJYAD", "BIOCI", "MUST", "SAIDOU", 
-                    "BOUNMER", "PRINT", "MOGES", "FOURNI", "BOIS", "PLANEX", "SMURF"
+                    "BOUNMER", "PRINT", "MOGES", "FOURNI", "BOIS", "PLANEX"
                 ]), case=False, na=False),
                 # Rule 7: Column CA equals 1
                 (raw_df["CA"] == 1)
@@ -77,7 +77,8 @@ if uploaded_file is not None:
                 3497000000   # Rule 7
             ]
 
-            raw_df["CPT"] = np.select(conditions, choices, default=np.nan)
+            # Use float type for CPT to support NaN values
+            raw_df["CPT"] = np.select(conditions, choices, default=np.nan).astype(float)
 
             # Process LIB (concatenate RAW_LIB/NAT/RAW_TIER)
             raw_df["LIB"] = (
@@ -91,12 +92,16 @@ if uploaded_file is not None:
                 "DATE": pd.to_datetime(raw_df["DATE"]).dt.strftime("%d/%m/%Y"),
                 "N PIECE": np.nan,
                 "CPT": raw_df["CPT"],
-                "TIERS": raw_df["TIERS"].astype(str),
+                "TIERS": raw_df["TIERS"],
                 "LIB": raw_df["LIB"].astype(str),
                 "REF": np.nan,
                 "DEBIT": raw_df["DEBIT"].round(2),
                 "CREDIT": raw_df["CREDIT"].round(2)
             })
+
+            # Replace "nan" strings with truly empty cells
+            result_df["CPT"] = result_df["CPT"].replace("nan", np.nan)
+            result_df["TIERS"] = result_df["TIERS"].replace("nan", np.nan)
 
             # Show preview of the result
             st.write("### Transformed Data Preview")
@@ -105,7 +110,7 @@ if uploaded_file is not None:
             # Download button for the result
             output = BytesIO()
             with pd.ExcelWriter(output, engine="xlsxwriter") as writer:
-                result_df.to_excel(writer, index=False, sheet_name="Transformed Data")
+                result_df.to_excel(writer, index=False, sheet_name="Transformed Data", na_rep="")
             output.seek(0)
 
             st.download_button(
