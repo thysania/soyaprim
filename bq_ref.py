@@ -3,7 +3,7 @@ import pandas as pd
 import numpy as np
 from io import BytesIO
 
-def app2():
+def app():
     st.title("App 2: Dropdown for Fifth Column and Row Splitting")
     st.write("Téléchargez votre fichier Excel brut pour modifier la cinquième colonne et diviser les lignes.")
 
