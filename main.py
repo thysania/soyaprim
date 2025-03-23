@@ -6,7 +6,7 @@ st.markdown("""
 <style>
 /* Narrower sidebar */
 [data-testid="stSidebar"] {
-    width: 150px !important;
+    width: 100px !important;
 }
 
 /* Button styling */
