@@ -3,6 +3,7 @@ import pandas as pd
 import numpy as np
 from io import BytesIO
 
+def app():
 # Page title
 st.title("Application de Transformation de Données Excel")
 st.write("Téléchargez votre fichier Excel brut et téléchargez les données transformées.")
@@ -125,3 +126,5 @@ if uploaded_file is not None:
 
     except Exception as e:
         st.error(f"Une erreur s'est produite : {e}")
+if __name__ == "__main__":
+    app()
