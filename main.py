@@ -37,9 +37,6 @@ Bienvenue dans l'application de transformation de données SOYAPRIM.
 Sélectionnez une application ci-dessous pour commencer.
 """)
 
-# Add a fun animation
-st.balloons()
-
 # Sidebar for navigation
 st.sidebar.title("Navigation")
 app_choice = st.sidebar.radio(
