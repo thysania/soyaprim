@@ -63,7 +63,7 @@ if uploaded_file is not None:
                     "ORANGE", "MAMDA", "ONSSA", "ASWAK", "BRICO", "CARREF", "WAFABAIL", 
                     "CABINET", "TRANS", "REDAL", "REFRI", "SECOLA", "DAKAR", "ATTIJARI", 
                     "TEMARA", "KPA", "EASY", "AJYAD", "BIOCI", "MUST", "SAIDOU", 
-                    "BOUNMER", "PRINT", "MOGES", "FOURNI", "BOIS", "PLANEX", "SMURF"
+                    "BOUNMER", "PRINT", "MOGES", "FOURNI", "BOIS", "PLANEX", "SMURF", "inwi"
                 ]), case=False, na=False),
                 # Rule 7: RAW_REF == "IR"
                 (raw_df["RAW_REF"] == "IR")
