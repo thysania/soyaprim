@@ -21,9 +21,14 @@ h1 {
 </style>
 """, unsafe_allow_html=True)
 
-# Add a logo
-logo = Image.open("logo.png")
-st.image(logo, width=100)
+# Add a logo (with error handling)
+try:
+    logo = Image.open("logo.png")
+    st.image(logo, width=100)
+except FileNotFoundError:
+    st.warning("Logo non trouvé. Veuillez ajouter un fichier 'logo.png' dans le répertoire principal.")
+except Exception as e:
+    st.error(f"Erreur lors du chargement du logo : {e}")
 
 # Title and description
 st.title("SOYAPRIM Data Transformation Suite")
