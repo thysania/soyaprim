@@ -9,7 +9,7 @@ app_choice = st.sidebar.radio(
 
 # Import and run the selected app
 if app_choice == "bq_ref":
-    from bq_ref import app2 as bq_ref_app
+    from bq_ref import app as bq_ref_app
     bq_ref_app()
 elif app_choice == "bq":
     from bq import app as bq_app
