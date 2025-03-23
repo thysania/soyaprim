@@ -21,25 +21,27 @@ section[data-testid="stSidebar"] {
 </style>
 """, unsafe_allow_html=True)
 
-# Title
-st.title("SOYAPRIM")
-
-# Create three vertically aligned buttons
-if st.button("BQ Ref"):
-    st.session_state.app_choice = "BQ Ref"
-
-if st.button("BQ"):
-    st.session_state.app_choice = "BQ"
-
-if st.button("Achats"):
-    st.session_state.app_choice = "Achats"
-
 # Initialize session state for app choice
 if "app_choice" not in st.session_state:
     st.session_state.app_choice = None
 
+# First Screen: Show only if no app is selected
+if st.session_state.app_choice is None:
+    # Title
+    st.title("SOYAPRIM")
+
+    # Create three vertically aligned buttons
+    if st.button("BQ Ref"):
+        st.session_state.app_choice = "BQ Ref"
+
+    if st.button("BQ"):
+        st.session_state.app_choice = "BQ"
+
+    if st.button("Achats"):
+        st.session_state.app_choice = "Achats"
+
 # If an app is selected, display it with a sidebar
-if st.session_state.app_choice:
+else:
     # Custom CSS to hide the first screen
     st.markdown("""
     <style>
