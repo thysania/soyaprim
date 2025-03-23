@@ -1,45 +1,31 @@
 import streamlit as st
-from PIL import Image
 
-# Custom CSS for styling
+# Custom CSS to center the buttons and remove the sidebar
 st.markdown("""
 <style>
-/* Narrower sidebar */
-[data-testid="stSidebar"] {
-    width: 100px !important;
-}
-
-/* Button styling */
+/* Center the buttons */
 .stButton button {
-    width: 100%;
+    display: block;
+    margin: 0 auto;
     background-color: #4F8BF9;
     color: white;
     border-radius: 5px;
     padding: 10px 20px;
-    font-size: 14px;
-    margin: 5px 0;
+    font-size: 16px;
 }
 
-/* Title styling */
-h1 {
-    color: #4F8BF9;
-    text-align: center;
+/* Hide the sidebar on the first screen */
+section[data-testid="stSidebar"] {
+    display: none;
+}
+
+/* Change the color of the selected radio button */
+div[role="radiogroup"] > label > div:first-child {
+    background-color: #4F8BF9 !important;
+    color: white !important;
 }
 </style>
 """, unsafe_allow_html=True)
-
-# Initialize session state for app selection
-if "app_choice" not in st.session_state:
-    st.session_state.app_choice = "BQ Ref"
-
-# Add a logo (with error handling)
-try:
-    logo = Image.open("logo.png")
-    st.image(logo, width=100)
-except FileNotFoundError:
-    st.warning("Logo non trouvé. Veuillez ajouter un fichier 'logo.png' dans le répertoire principal.")
-except Exception as e:
-    st.error(f"Erreur lors du chargement du logo : {e}")
 
 # Title and description
 st.title("SOYAPRIM Data Transformation Suite")
@@ -48,33 +34,42 @@ Bienvenue dans l'application de transformation de données SOYAPRIM.
 Sélectionnez une application ci-dessous pour commencer.
 """)
 
-# Sidebar for navigation
-st.sidebar.title("APPS")
+# Create three centered buttons
+col1, col2, col3 = st.columns(3)
 
-# Navigation buttons
-if st.sidebar.button("BQ Ref"):
-    st.session_state.app_choice = "BQ Ref"
+with col1:
+    if st.button("BQ Ref"):
+        st.session_state.app_choice = "BQ Ref"
 
-if st.sidebar.button("BQ"):
-    st.session_state.app_choice = "BQ"
+with col2:
+    if st.button("BQ"):
+        st.session_state.app_choice = "BQ"
 
-if st.sidebar.button("Achats"):
-    st.session_state.app_choice = "Achats"
+with col3:
+    if st.button("Achats"):
+        st.session_state.app_choice = "Achats"
 
-# Load the selected app
-if st.session_state.app_choice == "BQ Ref":
-    from bq_ref import app
-    app()
-elif st.session_state.app_choice == "BQ":
-    from bq import app
-    app()
-elif st.session_state.app_choice == "Achats":
-    from achats import app
-    app()
+# Initialize session state for app choice
+if "app_choice" not in st.session_state:
+    st.session_state.app_choice = None
 
-# Footer
-st.markdown("""
----
-### À propos
-Cette application a été développée par [OK](https://github.com/thysania).
-""")
+# If an app is selected, display it with a sidebar
+if st.session_state.app_choice:
+    # Sidebar for navigation
+    st.sidebar.title("Navigation")
+    app_choice = st.sidebar.radio(
+        "Choisissez une application :",
+        ("BQ Ref", "BQ", "Achats"),
+        index=["BQ Ref", "BQ", "Achats"].index(st.session_state.app_choice)
+    )
+
+    # Load the selected app
+    if app_choice == "BQ Ref":
+        from bq_ref import app2 as bq_ref_app
+        bq_ref_app()
+    elif app_choice == "BQ":
+        from bq import app as bq_app
+        bq_app()
+    elif app_choice == "Achats":
+        from achats import app as achats_app
+        achats_app()
