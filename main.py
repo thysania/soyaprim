@@ -1,53 +1,38 @@
 import streamlit as st
 
-# Custom CSS to center the buttons and remove the sidebar
+# Custom CSS to style the buttons and hide the sidebar
 st.markdown("""
 <style>
-/* Center the buttons */
+/* Center the buttons and make them the same width */
 .stButton button {
-    display: block;
-    margin: 0 auto;
+    width: 100%;
     background-color: #4F8BF9;
     color: white;
     border-radius: 5px;
     padding: 10px 20px;
     font-size: 16px;
+    margin: 5px 0;
 }
 
 /* Hide the sidebar on the first screen */
 section[data-testid="stSidebar"] {
     display: none;
 }
-
-/* Change the color of the selected radio button */
-div[role="radiogroup"] > label > div:first-child {
-    background-color: #4F8BF9 !important;
-    color: white !important;
-}
 </style>
 """, unsafe_allow_html=True)
 
-# Title and description
-st.title("SOYAPRIM Data Transformation Suite")
-st.write("""
-Bienvenue dans l'application de transformation de données SOYAPRIM. 
-Sélectionnez une application ci-dessous pour commencer.
-""")
+# Title
+st.title("SOYAPRIM")
 
-# Create three centered buttons
-col1, col2, col3 = st.columns(3)
+# Create three vertically aligned buttons
+if st.button("BQ Ref"):
+    st.session_state.app_choice = "BQ Ref"
 
-with col1:
-    if st.button("BQ Ref"):
-        st.session_state.app_choice = "BQ Ref"
+if st.button("BQ"):
+    st.session_state.app_choice = "BQ"
 
-with col2:
-    if st.button("BQ"):
-        st.session_state.app_choice = "BQ"
-
-with col3:
-    if st.button("Achats"):
-        st.session_state.app_choice = "Achats"
+if st.button("Achats"):
+    st.session_state.app_choice = "Achats"
 
 # Initialize session state for app choice
 if "app_choice" not in st.session_state:
@@ -55,6 +40,16 @@ if "app_choice" not in st.session_state:
 
 # If an app is selected, display it with a sidebar
 if st.session_state.app_choice:
+    # Custom CSS to hide the first screen
+    st.markdown("""
+    <style>
+    /* Hide the first screen */
+    div[data-testid="stVerticalBlock"] > div:first-child {
+        display: none;
+    }
+    </style>
+    """, unsafe_allow_html=True)
+
     # Sidebar for navigation
     st.sidebar.title("Navigation")
     app_choice = st.sidebar.radio(
