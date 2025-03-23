@@ -6,7 +6,7 @@ st.markdown("""
 <style>
 /* Narrower sidebar */
 [data-testid="stSidebar"] {
-    width: 150px !important;
+    width: 100px !important;
 }
 
 /* Button styling */
@@ -49,7 +49,7 @@ Sélectionnez une application ci-dessous pour commencer.
 """)
 
 # Sidebar for navigation
-st.sidebar.title("Navigation")
+st.sidebar.title("APPS")
 
 # Navigation buttons
 if st.sidebar.button("BQ Ref"):
