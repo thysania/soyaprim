@@ -17,8 +17,8 @@ if uploaded_file is not None:
         mappings_df = pd.read_excel(uploaded_file, sheet_name=1, header=None)  # Assuming no headers in Sheet 2
 
         # Validate the number of columns in the raw file
-        if raw_df.shape[1] != 9:
-            st.error(f"Expected 9 columns in the raw file, but found {raw_df.shape[1]}. Please check the file structure.")
+        if raw_df.shape[1] != 8:
+            st.error(f"Expected 8 columns in the raw file, but found {raw_df.shape[1]}. Please check the file structure.")
         elif mappings_df.shape[1] < 2:
             st.error(f"Expected at least 2 columns in the mappings sheet, but found {mappings_df.shape[1]}. Please check the file structure.")
         else:
