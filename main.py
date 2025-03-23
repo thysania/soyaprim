@@ -6,7 +6,7 @@ st.markdown("""
 <style>
 /* Narrower sidebar */
 [data-testid="stSidebar"] {
-    width: 200px !important;
+    width: 150px !important;
 }
 
 /* Button styling */
@@ -47,9 +47,6 @@ st.write("""
 Bienvenue dans l'application de transformation de données SOYAPRIM. 
 Sélectionnez une application ci-dessous pour commencer.
 """)
-
-# Add a fun animation
-st.balloons()
 
 # Sidebar for navigation
 st.sidebar.title("Navigation")
