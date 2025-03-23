@@ -45,7 +45,7 @@ if uploaded_file is not None:
             # Ensure all conditions are boolean arrays
             conditions = [
                 # Rule 7: Column CA equals 1
-                (raw_df["CA"] == 1)
+                (raw_df["CA"] == 1),
                 # Rule 1: RAW_TIER starts with "FRUL" (case-insensitive)
                 raw_df["RAW_TIER"].astype(str).str.upper().str.startswith("FRUL", na=False),
                 # Rule 2: RAW_FILTER starts with "SALAIRE" or NAT == "PAIE" (assuming RAW_FILTER is a typo for another column)
@@ -64,9 +64,7 @@ if uploaded_file is not None:
                     "CABINET", "TRANS", "REDAL", "REFRI", "SECOLA", "DAKAR", "ATTIJARI", 
                     "TEMARA", "KPA", "EASY", "AJYAD", "BIOCI", "MUST", "SAIDOU", 
                     "BOUNMER", "PRINT", "MOGES", "FOURNI", "BOIS", "PLANEX", "SMURF"  # Added "SMURF"
-                ]), case=False, na=False),
-                # Rule 7: Column CA equals 1
-                (raw_df["CA"] == 1)
+                ]), case=False, na=False)
             ]
 
             choices = [
