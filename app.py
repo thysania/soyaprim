@@ -44,6 +44,8 @@ if uploaded_file is not None:
             # Process CPT (apply conditions)
             # Ensure all conditions are boolean arrays
             conditions = [
+                # Rule 7: Column CA equals 1
+                (raw_df["CA"] == 1)
                 # Rule 1: RAW_TIER starts with "FRUL" (case-insensitive)
                 raw_df["RAW_TIER"].astype(str).str.upper().str.startswith("FRUL", na=False),
                 # Rule 2: RAW_FILTER starts with "SALAIRE" or NAT == "PAIE" (assuming RAW_FILTER is a typo for another column)
@@ -68,13 +70,13 @@ if uploaded_file is not None:
             ]
 
             choices = [
+                3497000000   # Rule 7
                 3421000000,  # Rule 1
                 4432000000,  # Rule 2
                 4441000000,  # Rule 3
                 6147300000,  # Rule 4
                 6331000000,  # Rule 5
                 4411000000,  # Rule 6
-                3497000000   # Rule 7
             ]
 
             # Use float type for CPT to support NaN values
