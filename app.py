@@ -4,11 +4,11 @@ import numpy as np
 from io import BytesIO
 
 # Page title
-st.title("Excel Data Transformation App")
-st.write("Upload your raw Excel file and download the transformed data.")
+st.title("Application de Transformation de Données Excel")
+st.write("Téléchargez votre fichier Excel brut et téléchargez les données transformées.")
 
 # File upload
-uploaded_file = st.file_uploader("Upload your raw Excel file", type=["xlsx"])
+uploaded_file = st.file_uploader("Téléchargez votre fichier Excel brut", type=["xlsx"])
 
 if uploaded_file is not None:
     try:
@@ -18,9 +18,9 @@ if uploaded_file is not None:
 
         # Validate the number of columns in the raw file
         if raw_df.shape[1] != 8:
-            st.error(f"Expected 8 columns in the raw file, but found {raw_df.shape[1]}. Please check the file structure.")
+            st.error(f"8 colonnes attendues dans le fichier brut, mais {raw_df.shape[1]} trouvées. Veuillez vérifier la structure du fichier.")
         elif mappings_df.shape[1] < 2:
-            st.error(f"Expected at least 2 columns in the mappings sheet, but found {mappings_df.shape[1]}. Please check the file structure.")
+            st.error(f"Au moins 2 colonnes attendues dans la feuille de mappage, mais {mappings_df.shape[1]} trouvées. Veuillez vérifier la structure du fichier.")
         else:
             # Assign column names to raw data (9 columns)
             raw_df.columns = [
@@ -63,8 +63,10 @@ if uploaded_file is not None:
                     "ORANGE", "MAMDA", "ONSSA", "ASWAK", "BRICO", "CARREF", "WAFABAIL", 
                     "CABINET", "TRANS", "REDAL", "REFRI", "SECOLA", "DAKAR", "ATTIJARI", 
                     "TEMARA", "KPA", "EASY", "AJYAD", "BIOCI", "MUST", "SAIDOU", 
-                    "BOUNMER", "PRINT", "MOGES", "FOURNI", "BOIS", "PLANEX", "SMURF"  # Added "SMURF"
-                ]), case=False, na=False)
+                    "BOUNMER", "PRINT", "MOGES", "FOURNI", "BOIS", "PLANEX", "SMURF"
+                ]), case=False, na=False),
+                # Rule 7: RAW_REF == "IR"
+                (raw_df["RAW_REF"] == "IR")
             ]
 
             choices = [
@@ -74,7 +76,8 @@ if uploaded_file is not None:
                 4441000000,  # Rule 3
                 6147300000,  # Rule 4
                 6331000000,  # Rule 5
-                4411000000   # Rule 6
+                4411000000,  # Rule 6
+                4452500000   # Rule 7
             ]
 
             # Use float type for CPT to support NaN values
@@ -104,21 +107,21 @@ if uploaded_file is not None:
             result_df["TIERS"] = result_df["TIERS"].replace("nan", np.nan)
 
             # Show preview of the result
-            st.write("### Transformed Data Preview")
+            st.write("### Aperçu des Données Transformées")
             st.dataframe(result_df.head())
 
             # Download button for the result
             output = BytesIO()
             with pd.ExcelWriter(output, engine="xlsxwriter") as writer:
-                result_df.to_excel(writer, index=False, sheet_name="Transformed Data", na_rep="")
+                result_df.to_excel(writer, index=False, sheet_name="Données Transformées", na_rep="")
             output.seek(0)
 
             st.download_button(
-                label="Download Transformed Data",
+                label="Télécharger les Données Transformées",
                 data=output,
-                file_name="transformed_data.xlsx",
+                file_name="donnees_transformees.xlsx",
                 mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
             )
 
     except Exception as e:
-        st.error(f"An error occurred: {e}")
+        st.error(f"Une erreur s'est produite : {e}")
