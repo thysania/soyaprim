@@ -25,7 +25,7 @@ if uploaded_file is not None:
             # Assign column names to raw data (9 columns)
             raw_df.columns = [
                 "DATE", "DROP", "RAW_LIB", "RAW_TIER", "RAW_REF", 
-                "DEBIT", "CREDIT", "NAT", "CA"
+                "DEBIT", "CREDIT", "CA"
             ]
             raw_df = raw_df.drop(columns="DROP")  # Remove second column
 
@@ -47,16 +47,16 @@ if uploaded_file is not None:
                 # Rule 1: RAW_TIER starts with "FRUL" (case-insensitive)
                 raw_df["RAW_TIER"].astype(str).str.upper().str.startswith("FRUL", na=False),
                 # Rule 2: RAW_FILTER starts with "SALAIRE" or NAT == "PAIE" (assuming RAW_FILTER is a typo for another column)
-                (raw_df["RAW_REF"].astype(str).str.upper().str.startswith("SALAIRE", na=False)) | (raw_df["NAT"] == "PAIE"),
+                (raw_df["RAW_REF"].astype(str).str.upper().str.startswith("SALAIRE", na=False)) | (raw_df["RAW_REF"] == "PAIE"),
                 # Rule 3: RAW_TIER == "CNSS" or NAT == "COTIS"
-                (raw_df["RAW_TIER"].astype(str).str.upper() == "CNSS") | (raw_df["NAT"] == "COTIS"),
+                (raw_df["RAW_TIER"].astype(str).str.upper() == "CNSS") | (raw_df["RAW_REF"] == "COTIS"),
                 # Rule 4: RAW_LIB starts with "Commis" or "Frais"
                 raw_df["RAW_LIB"].astype(str).str.upper().str.startswith(("COMMIS", "FRAIS"), na=False),
                 # Rule 5: RAW_LIB starts with "diff" or contains "change"
                 raw_df["RAW_LIB"].astype(str).str.upper().str.contains("DIFF", na=False) | 
                 raw_df["RAW_LIB"].astype(str).str.upper().str.contains("CHANGE", na=False),
                 # Rule 6: NAT == "FELAH" or TIERS contains specified strings
-                (raw_df["NAT"] == "FELAH") | 
+                (raw_df["RAW_REF"] == "FELAH") | 
                 raw_df["TIERS"].astype(str).str.contains("|".join([
                     "ORANGE", "MAMDA", "ONSSA", "ASWAK", "BRICO", "CARREF", "WAFABAIL", 
                     "CABINET", "TRANS", "REDAL", "REFRI", "SECOLA", "DAKAR", "ATTIJARI", 
@@ -83,7 +83,7 @@ if uploaded_file is not None:
             # Process LIB (concatenate RAW_LIB/NAT/RAW_TIER)
             raw_df["LIB"] = (
                 raw_df["RAW_LIB"].astype(str) + "/" + 
-                raw_df["NAT"].astype(str) + "/" + 
+                raw_df["RAW_REF"].astype(str) + "/" + 
                 raw_df["RAW_TIER"].astype(str)
             )
 
