@@ -2,139 +2,99 @@ import streamlit as st
 import pandas as pd
 import numpy as np
 from io import BytesIO
+from openpyxl import Workbook
+from openpyxl.utils.dataframe import dataframe_to_rows
+from openpyxl.worksheet.datavalidation import DataValidation
 
 def app():
-    st.title("BQ Ref - Transformation de données")
-    
-    if 'processed' not in st.session_state:
-        st.session_state.processed = False
-        st.session_state.raw_df = None
-        st.session_state.final_df = None
+    st.title("BQ Ref - Transformation Excel")
+    st.write("Téléchargez votre fichier Excel pour recevoir une version avec menus déroulants")
 
-    uploaded_file = st.file_uploader("Téléchargez votre fichier Excel", type=["xlsx"])
+    uploaded_file = st.file_uploader("Choisissez votre fichier Excel", type=["xlsx"])
 
-    if uploaded_file and not st.session_state.processed:
+    if uploaded_file:
         try:
             # Read and prepare data
-            raw_df = pd.read_excel(uploaded_file, sheet_name=0, header=None)
+            df = pd.read_excel(uploaded_file, header=None)
             
-            if raw_df.shape[1] < 7:
-                st.error("Le fichier doit contenir au moins 7 colonnes.")
+            if df.shape[1] < 7:
+                st.error("Le fichier doit contenir au moins 7 colonnes")
                 return
                 
-            raw_df.columns = ["DATE", "DROP", "RAW_LIB", "RAW_TIER", "RAW_REF", "DEBIT", "CREDIT"]
-            raw_df = raw_df.drop(columns="DROP")
-            raw_df["RAW_TIER"] = raw_df["RAW_TIER"].astype(str).str.lower()
-            raw_df["RAW_LIB"] = raw_df["RAW_LIB"].astype(str).str.lower()
+            df.columns = ["DATE", "DROP", "RAW_LIB", "RAW_TIER", "RAW_REF", "DEBIT", "CREDIT"]
+            df = df.drop(columns="DROP")
             
-            # Store the raw data
-            st.session_state.raw_df = raw_df
-            st.session_state.final_df = raw_df.copy()
+            # Convert to lowercase for matching
+            df["RAW_TIER"] = df["RAW_TIER"].astype(str).str.lower()
+            df["RAW_LIB"] = df["RAW_LIB"].astype(str).str.lower()
             
-            # Find rows needing manual selection
-            manual_selection_rows = []
-            for i in range(len(raw_df)):
-                if pd.isna(raw_df.at[i, "RAW_REF"]):
-                    tier = raw_df.at[i, "RAW_TIER"]
-                    lib = raw_df.at[i, "RAW_LIB"]
-                    debit = raw_df.at[i, "DEBIT"]
-                    
-                    # Automatic assignments
-                    if any(name in tier for name in ["hamza", "youssef"]):
-                        st.session_state.final_df.at[i, "RAW_REF"] = "FELAH"
-                    elif any(kw in tier for kw in ["orange", "mamda"]):
-                        st.session_state.final_df.at[i, "RAW_REF"] = "FAC"
-                    elif any(kw in lib or kw in tier for kw in ["frais", "commis"]):
-                        st.session_state.final_df.at[i, "RAW_REF"] = "FRAIS"
-                    elif tier == "cnss":
-                        st.session_state.final_df.at[i, "RAW_REF"] = "COTIS"
-                    elif any(kw in lib or kw in tier for kw in ["salaire", "paie"]):
-                        st.session_state.final_df.at[i, "RAW_REF"] = "PAIE"
-                    elif "relanc" in tier:
-                        st.session_state.final_df.at[i, "RAW_REF"] = "REMB"
-                    elif tier == "dgi" and debit > 50000:
-                        st.session_state.final_df.at[i, "RAW_REF"] = "IR"
-                    else:
-                        manual_selection_rows.append(i)
+            # Create Excel workbook
+            wb = Workbook()
+            ws = wb.active
             
-            # Store rows needing manual selection
-            st.session_state.manual_rows = manual_selection_rows
-            st.session_state.current_row = 0 if manual_selection_rows else None
+            # Write headers
+            headers = ["DATE", "RAW_LIB", "RAW_TIER", "RAW_REF", "DEBIT", "CREDIT"]
+            ws.append(headers)
             
-        except Exception as e:
-            st.error(f"Erreur lors de la lecture du fichier: {str(e)}")
-            return
-
-    if st.session_state.raw_df is not None and not st.session_state.processed:
-        if st.session_state.manual_rows:
-            # Show dropdown for current row needing selection
-            current_idx = st.session_state.manual_rows[st.session_state.current_row]
-            row_data = st.session_state.raw_df.iloc[current_idx]
+            # Define dropdown options
+            options = ["FELAH", "FAC", "FRAIS", "REMB", "PAIE", "COTIS", "IR", "RETENU MEDECIN", "RETENU AVOCAT"]
             
-            st.write(f"## Ligne {current_idx + 1} nécessite une sélection manuelle")
-            st.write(f"Libellé: {row_data['RAW_LIB']}")
-            st.write(f"Tiers: {row_data['RAW_TIER']}")
+            # Create data validation
+            dv = DataValidation(type="list", formula1=f'"{",".join(options)}"')
+            ws.add_data_validation(dv)
             
-            selected = st.selectbox(
-                "Choisissez une option:",
-                options=["FELAH", "FAC", "FRAIS", "REMB", "PAIE", "COTIS", "IR", "RETENU MEDECIN", "RETENU AVOCAT", "CHANGE"],
-                key=f"select_{current_idx}"
+            # Process each row
+            for idx, row in df.iterrows():
+                # Auto-fill based on conditions
+                if any(name in row["RAW_TIER"] for name in ["hamza", "youssef"]):
+                    ref = "FELAH"
+                elif any(kw in row["RAW_TIER"] for kw in ["orange", "mamda"]):
+                    ref = "FAC"
+                elif any(kw in row["RAW_LIB"] or kw in row["RAW_TIER"] for kw in ["frais", "commis"]):
+                    ref = "FRAIS"
+                elif row["RAW_TIER"] == "cnss":
+                    ref = "COTIS"
+                elif any(kw in row["RAW_LIB"] or kw in row["RAW_TIER"] for kw in ["salaire", "paie"]):
+                    ref = "PAIE"
+                elif "relanc" in row["RAW_TIER"]:
+                    ref = "REMB"
+                elif row["RAW_TIER"] == "dgi" and row["DEBIT"] > 50000:
+                    ref = "IR"
+                else:
+                    ref = ""  # Empty for dropdown
+                
+                # Write row to Excel
+                ws.append([
+                    row["DATE"],
+                    row["RAW_LIB"],
+                    row["RAW_TIER"],
+                    ref,
+                    row["DEBIT"],
+                    row["CREDIT"]
+                ])
+                
+                # Add dropdown to empty cells
+                if ref == "":
+                    dv.add(ws[f"D{idx+2}"])  # D column is RAW_REF
+            
+            # Handle row splitting (will appear as separate rows in Excel)
+            st.warning("Les lignes DGI avec DEBIT=734 seront divisées en deux lignes dans le fichier final")
+            
+            # Save to buffer
+            output = BytesIO()
+            wb.save(output)
+            output.seek(0)
+            
+            st.success("Fichier prêt !")
+            st.download_button(
+                "Télécharger le fichier avec menus déroulants",
+                data=output,
+                file_name="donnees_avec_menus.xlsx",
+                mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
             )
             
-            if st.button("Confirmer la sélection"):
-                st.session_state.final_df.at[current_idx, "RAW_REF"] = selected
-                st.session_state.current_row += 1
-                
-                if st.session_state.current_row >= len(st.session_state.manual_rows):
-                    st.session_state.processed = True
-                    st.experimental_rerun()
-        else:
-            st.session_state.processed = True
-
-    if st.session_state.processed and st.session_state.final_df is not None:
-        # Apply row splitting
-        new_rows = []
-        drop_indices = []
-        
-        for idx, row in st.session_state.final_df.iterrows():
-            if row["RAW_TIER"] == "dgi" and row["DEBIT"] == 734:
-                medecin_row = row.copy()
-                medecin_row["DEBIT"] = 400
-                medecin_row["RAW_REF"] = "RETENU MEDECIN"
-                
-                avocat_row = row.copy()
-                avocat_row["DEBIT"] = 334
-                avocat_row["RAW_REF"] = "RETENU AVOCAT"
-                
-                new_rows.extend([medecin_row, avocat_row])
-                drop_indices.append(idx)
-        
-        if new_rows:
-            final_df = pd.concat([
-                st.session_state.final_df.drop(drop_indices),
-                pd.DataFrame(new_rows)
-            ], ignore_index=True)
-        else:
-            final_df = st.session_state.final_df.copy()
-
-        # Show final results
-        st.write("## Résultats finaux")
-        st.dataframe(final_df)
-        
-        output = BytesIO()
-        with pd.ExcelWriter(output, engine="xlsxwriter") as writer:
-            final_df.to_excel(writer, index=False)
-        
-        st.download_button(
-            "Télécharger les données transformées",
-            data=output,
-            file_name="donnees_finales.xlsx",
-            mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-        )
-
-        if st.button("Traiter un nouveau fichier"):
-            st.session_state.clear()
-            st.experimental_rerun()
+        except Exception as e:
+            st.error(f"Erreur : {str(e)}")
 
 if __name__ == "__main__":
     app()
