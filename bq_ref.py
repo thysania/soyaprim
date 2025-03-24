@@ -20,7 +20,7 @@ def app():
                 st.error("Le fichier doit contenir au moins 5 colonnes.")
             else:
                 # Assign column names
-                raw_df.columns = ["DATE", "DROP", "RAW_LIB", "RAW_TIER", "RAW_REF", "DEBIT", "CREDIT", "NAT", "CA"]
+                raw_df.columns = ["DATE", "DROP", "RAW_LIB", "RAW_TIER", "RAW_REF", "DEBIT", "CREDIT"]
 
                 # Determine the last row based on the DATE column
                 last_row = raw_df["DATE"].last_valid_index()
