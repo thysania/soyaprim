@@ -46,9 +46,16 @@ def app():
             # Process each row
             for idx, row in df.iterrows():
                 # Auto-fill based on conditions
-                if any(name in row["RAW_TIER"] for name in ["hamza", "youssef"]):
+                if any(name in row["RAW_TIER"] for name in ["hamza", "youssef", "abdellah", "yousef", "rachid", "majdoubi", "touhami", "bikri", 
+                            "bouzidi", "brahim", "derouach", "hatta", "benda", "khalid", "amine", "hamid", 
+                            "mohammed", "mohamed", "sliman", "benbo", "dkhail", "charrad", "bouzid", "lehcen", 
+                            "acha", "akil", "benz", "hassan", "hadri", "kharmo", "jilali", "houcin", "fellaha", 
+                            "miloud", "asmaa", "bouchta", "ahmed"]):
                     ref = "FELAH"
-                elif any(kw in row["RAW_TIER"] for kw in ["orange", "mamda"]):
+                elif any(kw in row["RAW_TIER"] for kw in ["orange", "mamda", "onssa", "aswak", "brico", "carref", "wafabail", "cabinet", 
+                            "trans", "redal", "refri", "secola", "dakar", "attijari", "temara", "kpa", "easy", 
+                            "ajyad", "bioci", "must", "saidou", "bounmer", "print", "moges", "fourni", "bois", 
+                            "planex", "smurf"]):
                     ref = "FAC"
                 elif any(kw in row["RAW_LIB"] or kw in row["RAW_TIER"] for kw in ["frais", "commis"]):
                     ref = "FRAIS"
