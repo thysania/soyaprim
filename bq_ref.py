@@ -21,12 +21,10 @@ def app():
             else:
                 # Assign column names
                 raw_df.columns = ["DATE", "DROP", "RAW_LIB", "RAW_TIER", "RAW_REF", "DEBIT", "CREDIT"]
-
-                # Determine the last row based on the DATE column
-                last_row = raw_df["DATE"].last_valid_index()
+                raw_df = raw_df.drop(columns="DROP")  # Remove second column
 
                 # Process the fifth column (RAW_REF)
-                for i in range(last_row + 1):
+                for i in range(len(raw_df)):
                     if pd.isna(raw_df.at[i, "RAW_REF"]):  # If cell is empty
                         # Determine the dropdown choice based on conditions
                         if any(name in str(raw_df.at[i, "RAW_TIER"]).lower() for name in [
@@ -83,7 +81,7 @@ def app():
 
                 # Add new rows and drop the original rows
                 if rows_to_add:
-                    raw_df = raw_df.append(rows_to_add, ignore_index=True)
+                    raw_df = pd.concat([raw_df, pd.DataFrame(rows_to_add)], ignore_index=True)
                 if rows_to_drop:
                     raw_df = raw_df.drop(rows_to_drop)
 
@@ -109,4 +107,4 @@ def app():
 
 # Run the app
 if __name__ == "__main__":
-    app2()
+    app()
