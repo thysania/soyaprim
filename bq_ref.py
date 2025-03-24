@@ -77,7 +77,7 @@ def app():
             
             selected = st.selectbox(
                 "Choisissez une option:",
-                options=["FELAH", "FAC", "FRAIS", "REMB", "PAIE", "COTIS", "IR", "RETENU MEDECIN", "RETENU AVOCAT"],
+                options=["FELAH", "FAC", "FRAIS", "REMB", "PAIE", "COTIS", "IR", "RETENU MEDECIN", "RETENU AVOCAT", "CHANGE"],
                 key=f"select_{current_idx}"
             )
             
