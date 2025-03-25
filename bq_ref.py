@@ -9,9 +9,8 @@ from openpyxl.styles import Alignment
 from openpyxl.utils import get_column_letter
 
 def app():
-    st.title("BQ Ref - Transformation Excel")
-    st.write("Téléchargez votre fichier Excel pour recevoir une version avec menus déroulants")
-
+    st.title("Reference Banque")
+    
     uploaded_file = st.file_uploader("Choisissez votre fichier Excel", type=["xlsx"])
 
     if uploaded_file:
