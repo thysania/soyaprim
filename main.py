@@ -25,17 +25,17 @@ h1 {
 st.sidebar.title("Navigation")
 app_choice = st.sidebar.radio(
     "Choisissez une application :",
-    ("BANQUE REFERANCE", "BANQUE", "ACHATS")
+    ("REFERANCE", "BANQUE", "ACHATS")
 )
 
 # Load the selected app
-if app_choice == "BQ Ref":
+if app_choice == "REFERANCE":
     from bq_ref import app as bq_ref_app
     bq_ref_app()
-elif app_choice == "BQ":
+elif app_choice == "BANQUE":
     from bq import app as bq_app
     bq_app()
-elif app_choice == "Achats":
+elif app_choice == "ACHATS":
     from achats import app as achats_app
     achats_app()
 
