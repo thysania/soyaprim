@@ -23,7 +23,7 @@ h1 {
 
 # Sidebar for navigation
 st.sidebar.title("Navigation")
-app_choice = st.sidebar.radio(
+app_choice = st.sidebar.selectbox(
     "Choisissez une application :",
     ("BQ Ref", "BQ", "Achats")
 )
