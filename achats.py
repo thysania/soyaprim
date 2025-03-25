@@ -52,10 +52,10 @@ def app():
         return df
     
     # Streamlit app
-    st.title("SOYAPRIM Data Transformation")
+    st.title("Achats")
     
     # File upload
-    uploaded_file = st.file_uploader("Upload your data file (Excel format)", type=["xlsx", "xls"])
+    uploaded_file = st.file_uploader("Choisissez votre fichier Excel", type=["xlsx", "xls"])
     
     if uploaded_file:
         # Transform the uploaded file
@@ -85,11 +85,11 @@ def app():
     
             # Convert BytesIO to downloadable file
             output.seek(0)
-            st.success("File transformed successfully! :)")
+            st.success("Fichier prêt! :)")
             st.download_button(
                 label="Telecharger le fichier",
                 data=output,
-                file_name="Soyaprim_Import.xlsx",
+                file_name="Import_Achats.xlsx",
                 mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
             )
         except Exception as e:
