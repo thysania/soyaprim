@@ -21,12 +21,6 @@ h1 {
 </style>
 """, unsafe_allow_html=True)
 
-# Title and description
-st.title("SOYAPRIM Suite")
-st.write(""" 
-Sélectionnez une application ci-dessous pour commencer.
-""")
-
 # Sidebar for navigation
 st.sidebar.title("Navigation")
 app_choice = st.sidebar.radio(
