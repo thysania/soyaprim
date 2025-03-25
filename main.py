@@ -23,9 +23,9 @@ h1 {
 
 # Sidebar for navigation
 st.sidebar.title("Navigation")
-app_choice = st.sidebar.selectbox(
+app_choice = st.sidebar.radio(
     "Choisissez une application :",
-    ("BQ Ref", "BQ", "Achats")
+    ("BANQUE REFERANCE", "BANQUE", "ACHATS")
 )
 
 # Load the selected app
