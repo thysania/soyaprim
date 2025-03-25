@@ -39,9 +39,3 @@ elif app_choice == "Achats":
     from achats import app as achats_app
     achats_app()
 
-# Footer
-st.markdown("""
----
-### À propos
-Cette application a été développée par [Votre Nom](https://github.com/thysania).
-""")
