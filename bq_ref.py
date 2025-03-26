@@ -106,9 +106,6 @@ def app():
                 adjusted_width = (max_length + 2) * 1.2
                 ws.column_dimensions[column_letter].width = adjusted_width
             
-            # Handle row splitting (will appear as separate rows in Excel)
-            st.warning("Les lignes DGI avec DEBIT=734 seront divisées en deux lignes dans le fichier final")
-            
             # Save to buffer
             output = BytesIO()
             wb.save(output)
