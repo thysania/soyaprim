@@ -2,7 +2,7 @@ import streamlit as st
 import pandas as pd
 import numpy as np
 from io import BytesIO
-from openpyxl import Workbook
+from openpyxl import Workbook, load_workbook
 from openpyxl.utils.dataframe import dataframe_to_rows
 from openpyxl.worksheet.datavalidation import DataValidation
 from openpyxl.styles import Alignment
@@ -16,7 +16,9 @@ def app():
     if uploaded_file:
         try:
             # Read and prepare data
-            df = pd.read_excel(uploaded_file, header=None)
+            # Read all sheets but we'll only process the first one
+            xls = pd.ExcelFile(uploaded_file)
+            df = pd.read_excel(xls, sheet_name=0, header=None)
             
             if df.shape[1] < 7:
                 st.error("Le fichier doit contenir au moins 7 colonnes")
@@ -27,13 +29,14 @@ def app():
             df.columns = ["DATE", "DROP", "RAW_LIB", "RAW_TIER", "RAW_REF", "DEBIT", "CREDIT"]
             df = df.drop(columns="DROP")
             
-            # Convert to lowercase for matching
-            df["RAW_TIER"] = df["RAW_TIER"].astype(str).str.lower()
-            df["RAW_LIB"] = df["RAW_LIB"].astype(str).str.lower()
+            # Convert to lowercase for matching and replace 'nan' with empty string
+            df["RAW_TIER"] = df["RAW_TIER"].astype(str).str.lower().replace('nan', '')
+            df["RAW_LIB"] = df["RAW_LIB"].astype(str).str.lower().replace('nan', '')
             
             # Create Excel workbook
             wb = Workbook()
             ws = wb.active
+            ws.title = "Processed"  # Rename the first sheet
             
             # Don't write headers - start from first row
             start_row = 1
@@ -49,8 +52,14 @@ def app():
             for idx, row in df.iterrows():
                 original_ref = str(original_ref_values[idx]) if idx < len(original_ref_values) else ""
                 
+                # Convert to string and clean
+                if pd.isna(original_ref_values[idx]):
+                    original_ref = ""
+                else:
+                    original_ref = str(original_ref_values[idx]).strip()
+                
                 # Only auto-fill if the original cell was empty
-                if pd.isna(original_ref_values[idx]) or str(original_ref_values[idx]).strip() == "":
+                if original_ref == "":
                     if any(name in row["RAW_TIER"] for name in ["hamza", "youssef", "abdellah", "yousef", "rachid", "majdoubi", "touhami", "bikri", 
                                 "bouzidi", "brahim", "derouach", "hatta", "benda", "khalid", "amine", "hamid", 
                                 "mohammed", "mohamed", "sliman", "benbo", "dkhail", "charrad", "bouzid", "lehcen", 
@@ -66,7 +75,7 @@ def app():
                         ref = "FRAIS"
                     elif row["RAW_TIER"] == "cnss":
                         ref = "COTIS"
-                    elif any(kw in row["RAW_LIB"] or kw in row["RAW_TIER"] for kw in ["salaire", "paie"]):
+                    elif any(kw in row["RAW_LIB"] or kw in row["RAW_TIER"] for kw in ["salaire", "paie", "ettoumy"]):
                         ref = "PAIE"
                     elif "relanc" in row["RAW_TIER"]:
                         ref = "REMB"
@@ -105,6 +114,15 @@ def app():
                 
                 adjusted_width = (max_length + 2) * 1.2
                 ws.column_dimensions[column_letter].width = adjusted_width
+            
+            # Add the second sheet from original file if it exists
+            if len(xls.sheet_names) > 1:
+                original_wb = load_workbook(uploaded_file)
+                original_second_sheet = original_wb[xls.sheet_names[1]]
+                new_sheet = wb.create_sheet(title=xls.sheet_names[1])
+                
+                for row in original_second_sheet.iter_rows():
+                    new_sheet.append([cell.value for cell in row])
             
             # Save to buffer
             output = BytesIO()
