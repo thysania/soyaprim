@@ -5,11 +5,10 @@ from io import BytesIO
 
 def app():
     # Page title
-    st.title("Application de Transformation de Données Excel")
-    st.write("Téléchargez votre fichier Excel brut et téléchargez les données transformées.")
+    st.title("Banque")
     
     # File upload
-    uploaded_file = st.file_uploader("Téléchargez votre fichier Excel brut", type=["xlsx"])
+    uploaded_file = st.file_uploader("Choisissez votre fichier", type=["xlsx"])
     
     if uploaded_file is not None:
         try:
@@ -19,7 +18,7 @@ def app():
     
             # Validate the number of columns in the raw file
             if raw_df.shape[1] != 8:
-                st.error(f"8 colonnes attendues dans le fichier brut, mais {raw_df.shape[1]} trouvées. Veuillez vérifier la structure du fichier.")
+                st.error(f"8 colonnes attendues dans le fichier, mais {raw_df.shape[1]} trouvées. Veuillez vérifier la structure du fichier.")
             elif mappings_df.shape[1] < 2:
                 st.error(f"Au moins 2 colonnes attendues dans la feuille de mappage, mais {mappings_df.shape[1]} trouvées. Veuillez vérifier la structure du fichier.")
             else:
@@ -120,7 +119,7 @@ def app():
                 st.download_button(
                     label="Télécharger les Données Transformées",
                     data=output,
-                    file_name="donnees_transformees.xlsx",
+                    file_name="import_awb.xlsx",
                     mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
                 )
     
