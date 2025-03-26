@@ -8,7 +8,7 @@ def app():
     st.title("Banque")
     
     # File upload
-    uploaded_file = st.file_uploader("Choisissez votre fichier", type=["xlsx"])
+    uploaded_file = st.file_uploader("Choisissez votre fichier Excel", type=["xlsx"])
     
     if uploaded_file is not None:
         try:
