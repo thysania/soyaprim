@@ -25,11 +25,11 @@ h1 {
 st.sidebar.title("SOYAPRIM")
 app_choice = st.sidebar.radio(
     "Choisissez une application :",
-    ("REFERANCE", "BANQUE", "ACHATS")
+    ("REFERENCE", "BANQUE", "ACHATS")
 )
 
 # Load the selected app
-if app_choice == "REFERANCE":
+if app_choice == "REFERENCE":
     from bq_ref import app as bq_ref_app
     bq_ref_app()
 elif app_choice == "BANQUE":
