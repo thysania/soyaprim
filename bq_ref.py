@@ -114,11 +114,11 @@ def app():
             wb.save(output)
             output.seek(0)
             
-            st.success("Fichier prêt !")
+            st.success("Votre Fichier est prêt !")
             st.download_button(
-                "Télécharger le fichier avec menus déroulants",
+                "Télécharger le fichier",
                 data=output,
-                file_name="donnees_avec_menus.xlsx",
+                file_name="donnees_awb.xlsx",
                 mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
             )
             
