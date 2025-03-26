@@ -111,7 +111,7 @@ def app():
             wb.save(output)
             output.seek(0)
             
-            st.success("Votre Fichier est prêt !")
+            st.success("Votre fichier est prêt !")
             st.download_button(
                 "Télécharger le fichier",
                 data=output,
