@@ -17,17 +17,16 @@ def app():
             mappings_df = pd.read_excel(uploaded_file, sheet_name=1, header=None)  # Assuming no headers in Sheet 2
     
             # Validate the number of columns in the raw file
-            if raw_df.shape[1] != 8:
+            if raw_df.shape[1] != 7:
                 st.error(f"8 colonnes attendues dans le fichier, mais {raw_df.shape[1]} trouvées. Veuillez vérifier la structure du fichier.")
             elif mappings_df.shape[1] < 2:
                 st.error(f"Au moins 2 colonnes attendues dans la feuille de mappage, mais {mappings_df.shape[1]} trouvées. Veuillez vérifier la structure du fichier.")
             else:
                 # Assign column names to raw data (9 columns)
                 raw_df.columns = [
-                    "DATE", "DROP", "RAW_LIB", "RAW_TIER", "RAW_REF", 
+                    "DATE", "RAW_LIB", "RAW_TIER", "RAW_REF", 
                     "DEBIT", "CREDIT", "CA"
                 ]
-                raw_df = raw_df.drop(columns="DROP")  # Remove second column
     
                 # Process TIERS (lookup RAW_TIER as wildcard in mappings sheet)
                 def lookup_tiers(raw_tier):
@@ -84,12 +83,17 @@ def app():
                 raw_df["CPT"] = np.select(conditions, choices, default=np.nan).astype(float)
     
                 # Process LIB (concatenate RAW_LIB/NAT/RAW_TIER)
-                raw_df["LIB"] = (
-                    raw_df["RAW_LIB"].astype(str) + "/" + 
-                    raw_df["RAW_REF"].astype(str) + "/" + 
-                    raw_df["RAW_TIER"].astype(str)
+               # Process LIB (concatenate RAW_LIB/NAT/RAW_TIER) - ignoring empty cells
+                raw_df["LIB"] = raw_df.apply(
+                    lambda row: "/".join(
+                        filter(None, [
+                            str(row["RAW_LIB"]).strip() if pd.notna(row["RAW_LIB"]) else None,
+                            str(row["RAW_REF"]).strip() if pd.notna(row["RAW_REF"]) else None,
+                            str(row["RAW_TIER"]).strip() if pd.notna(row["RAW_TIER"]) else None
+                        ]
+                    )),
+                    axis=1
                 )
-    
                 # Create final DataFrame with specified columns and formatting
                 result_df = pd.DataFrame({
                     "DATE": pd.to_datetime(raw_df["DATE"]).dt.strftime("%d/%m/%Y"),
