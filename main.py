@@ -22,7 +22,7 @@ h1 {
 """, unsafe_allow_html=True)
 
 # Sidebar for navigation
-st.sidebar.title("Navigation")
+st.sidebar.title("SOYAPRIM")
 app_choice = st.sidebar.radio(
     "Choisissez une application :",
     ("REFERANCE", "BANQUE", "ACHATS")
