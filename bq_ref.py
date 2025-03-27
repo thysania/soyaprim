@@ -71,7 +71,7 @@ def app():
                                 "ajyad", "bioci", "must", "saidou", "bounmer", "print", "moges", "fourni", "bois", 
                                 "planex", "smurf"]):
                         ref = "FAC"
-                    elif any(kw in row["RAW_LIB"] or kw in row["RAW_TIER"] for kw in ["frais", "commis"]):
+                    elif any(kw in row["RAW_LIB"] or kw in row["RAW_TIER"] for kw in ["frais", "commis", "pmeplus"]):
                         ref = "FRAIS"
                     elif row["RAW_TIER"] == "cnss":
                         ref = "COTIS"
