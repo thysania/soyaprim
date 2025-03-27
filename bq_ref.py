@@ -69,7 +69,7 @@ def app():
                     elif any(kw in row["RAW_TIER"] for kw in ["orange", "mamda", "onssa", "aswak", "brico", "carref", "wafabail", "cabinet", 
                                 "trans", "redal", "refri", "secola", "dakar", "attijari", "temara", "kpa", "easy", 
                                 "ajyad", "bioci", "must", "saidou", "bounmer", "print", "moges", "fourni", "bois", 
-                                "planex", "smurf", "asswak", "autor"]):
+                                "planex", "smurf", "asswak", "autor", "omnium", "dakkar"]):
                         ref = "FAC"
                     elif any(kw in row["RAW_LIB"] or kw in row["RAW_TIER"] for kw in ["frais", "commis", "pmeplus"]):
                         ref = "FRAIS"
