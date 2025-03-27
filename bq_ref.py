@@ -75,7 +75,7 @@ def app():
                         ref = "FRAIS"
                     elif row["RAW_TIER"] == "cnss":
                         ref = "COTIS"
-                    elif any(kw in row["RAW_LIB"] or kw in row["RAW_TIER"] for kw in ["salaire", "paie"]):
+                    elif "salaire" in row["RAW_TIER"]:
                         ref = "PAIE"
                     elif "ettoumy" in row["RAW_TIER"]:
                         ref = "PAIE"
