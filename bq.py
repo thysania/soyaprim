@@ -82,7 +82,7 @@ def app():
                     4411000000,  # Rule 6
                     4452500000,  # Rule 7
                     4458110100,  # Rule 8
-                    4458110200,  # Rule 9
+                    4458110200   # Rule 9
                 ]
     
                 # Use float type for CPT to support NaN values
