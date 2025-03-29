@@ -66,6 +66,10 @@ def app():
                     ]), case=False, na=False),
                     # Rule 7: RAW_REF == "IR"
                     (raw_df["RAW_REF"] == "IR")
+                    # Rule 8: RAW_REF == "IR"
+                    (raw_df["RAW_REF"] == "RETENU MEDECIN")
+                    # Rule 9: RAW_REF == "IR"
+                    (raw_df["RAW_REF"] == "RETENU AVOCAT")
                 ]
     
                 choices = [
@@ -76,7 +80,9 @@ def app():
                     6147300000,  # Rule 4
                     6331000000,  # Rule 5
                     4411000000,  # Rule 6
-                    4452500000   # Rule 7
+                    4452500000,  # Rule 7
+                    4458110100,  # Rule 8
+                    4458110200,  # Rule 9
                 ]
     
                 # Use float type for CPT to support NaN values
