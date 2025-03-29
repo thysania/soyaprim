@@ -65,9 +65,9 @@ def app():
                         "BOUNMER", "PRINT", "MOGES", "FOURNI", "BOIS", "PLANEX", "SMURF", "ASSWAK", "AUTOROUTE", "inwi", "deco new", "ideal", "bmj", "relanc"
                     ]), case=False, na=False),
                     # Rule 7: RAW_REF == "IR"
-                    (raw_df["RAW_REF"] == "IR")
+                    (raw_df["RAW_REF"] == "IR"),
                     # Rule 8: RAW_REF == "IR"
-                    (raw_df["RAW_REF"] == "RETENU MEDECIN")
+                    (raw_df["RAW_REF"] == "RETENU MEDECIN"),
                     # Rule 9: RAW_REF == "IR"
                     (raw_df["RAW_REF"] == "RETENU AVOCAT")
                 ]
