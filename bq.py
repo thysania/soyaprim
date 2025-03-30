@@ -91,8 +91,8 @@ def app():
                     (raw_df["RAW_REF"].astype(str).str.upper().str.startswith("SALAIRE", na=False)) | (raw_df["RAW_REF"] == "PAIE"),
                     # Rule 3: RAW_TIER == "CNSS" or NAT == "COTIS"
                     (raw_df["RAW_TIER"].astype(str).str.upper() == "CNSS") | (raw_df["RAW_REF"] == "COTIS"),
-                    # Rule 4: RAW_LIB starts with "Commis" or "Frais"
-                    (raw_df["CA"] == "FRAIS"),
+                    # Rule 4: RAW_REF == FRAIS
+                    (raw_df["RAW_REF"] == "FRAIS"),
                     # Rule 5: RAW_LIB starts with "diff" or contains "change"
                     raw_df["RAW_LIB"].astype(str).str.upper().str.contains("DIFF", na=False) | 
                     raw_df["RAW_LIB"].astype(str).str.upper().str.contains("CHANGE", na=False),
