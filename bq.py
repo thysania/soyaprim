@@ -93,8 +93,8 @@ def app():
                     (raw_df["RAW_TIER"].astype(str).str.upper() == "CNSS") | (raw_df["RAW_REF"] == "COTIS"),
                     # Rule 4: RAW_LIB starts with "Commis" or "Frais"
                     raw_df["RAW_LIB"].astype(str).str.upper().str.startswith(("COMMIS", "FRAIS"), na=False) |
-                    raw_df["RAW_LIB"].astype(str).str.upper().str.contains("Frais", na=False) |
-                    raw_df["RAW_TIER"].astype(str).str.upper().str.contains("SMS", na=False)
+                    raw_df["RAW_REF"].astype(str).str.upper().str.contains("Frais", na=False) |
+                    raw_df["RAW_TIER"].astype(str).str.upper().str.contains("SMS", na=False) |
                     # Rule 5: RAW_LIB starts with "diff" or contains "change"
                     raw_df["RAW_LIB"].astype(str).str.upper().str.contains("DIFF", na=False) | 
                     raw_df["RAW_LIB"].astype(str).str.upper().str.contains("CHANGE", na=False),
@@ -135,7 +135,7 @@ def app():
     
                 # Process LIB (concatenate RAW_LIB/NAT/RAW_TIER) - ignoring empty cells
                 raw_df["LIB"] = raw_df.apply(
-                    lambda row: "/".join(
+                    lambda row: " / ".join(
                         filter(None, [
                             str(row["RAW_LIB"]).strip() if pd.notna(row["RAW_LIB"]) else None,
                             str(row["RAW_REF"]).strip() if pd.notna(row["RAW_REF"]) else None,
