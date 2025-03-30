@@ -69,7 +69,9 @@ def app():
                     # Rule 8: RAW_REF == "IR"
                     (raw_df["RAW_REF"] == "RETENU MEDECIN"),
                     # Rule 9: RAW_REF == "IR"
-                    (raw_df["RAW_REF"] == "RETENU AVOCAT")
+                    (raw_df["RAW_REF"] == "RETENU AVOCAT"),
+                    # Rule 10: RAW_TIER contains "MEDECIN"
+                    (raw_df["RAW_TIER"].astype(str).str.upper().str.contains("SAIDOU", na=False))
                 ]
     
                 choices = [
@@ -82,7 +84,8 @@ def app():
                     4411000000,  # Rule 6
                     4452500000,  # Rule 7
                     4458110100,  # Rule 8
-                    4458110200   # Rule 9
+                    4458110200,  # Rule 9
+                    4411000000   # Rule 10
                 ]
     
                 # Use float type for CPT to support NaN values
