@@ -81,6 +81,13 @@ def app():
                         ref = "IR"
                     elif "change" in row["RAW_lib"]:
                         ref = "PERTE"
+                    elif "change" in row["RAW_LIB"]:
+                        if not row["CREDIT"]:  # CREDIT is empty
+                            ref = "PERTE"
+                        elif not row["DEBIT"]:  # DEBIT is empty
+                            ref = "GAIN"
+                        else:
+                            ref = "PERTE"
                     else:
                         ref = ""  # Empty for dropdown
                 else:
