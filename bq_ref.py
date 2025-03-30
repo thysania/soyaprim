@@ -79,6 +79,8 @@ def app():
                         ref = "REMB"
                     elif row["RAW_TIER"] == "dgi" and row["DEBIT"] > 50000:
                         ref = "IR"
+                    elif "change" in row["RAW_lib"]:
+                        ref = "PERTE"
                     else:
                         ref = ""  # Empty for dropdown
                 else:
