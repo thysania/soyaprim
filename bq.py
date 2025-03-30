@@ -94,7 +94,7 @@ def app():
                     # Rule 4: RAW_LIB starts with "Commis" or "Frais"
                     raw_df["RAW_LIB"].astype(str).str.upper().str.startswith(("COMMIS", "FRAIS"), na=False) |
                     raw_df["RAW_REF"].astype(str).str.upper().str.contains("Frais", na=False) |
-                    raw_df["RAW_TIER"].astype(str).str.upper().str.contains("SMS", na=False) |
+                    raw_df["RAW_TIER"].astype(str).str.upper().str.contains("SMS", na=False),
                     # Rule 5: RAW_LIB starts with "diff" or contains "change"
                     raw_df["RAW_LIB"].astype(str).str.upper().str.contains("DIFF", na=False) | 
                     raw_df["RAW_LIB"].astype(str).str.upper().str.contains("CHANGE", na=False),
