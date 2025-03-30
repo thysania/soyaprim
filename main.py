@@ -1,6 +1,12 @@
 import streamlit as st
 import time
 from datetime import datetime
+import importlib
+import sys
+import os
+
+# Add the current directory to the path to find modules
+sys.path.append(os.path.dirname(__file__))
 
 # Set page configuration
 st.set_page_config(
@@ -197,27 +203,56 @@ with st.spinner(f"Chargement de l'application {st.session_state.selected_app}...
 # Container for the app
 app_container = st.container()
 
+# Dynamically load the selected app module
 with app_container:
-    # Import and run the selected app
-    if st.session_state.selected_app == "REFERENCE":
-        from bq_ref import app as bq_ref_app
-        bq_ref_app()
-    elif st.session_state.selected_app == "BANQUE":
-        from bq import app as bq_app
-        bq_app()
-    elif st.session_state.selected_app == "ACHATS":
-        try:
-            from achats import app as achats_app
-            achats_app()
-        except ImportError:
-            st.info("Module 'achats' n'est pas encore disponible. L'application est en cours de développement.")
-            
-            # Placeholder content for ACHATS module
-            st.markdown("""
-            ### Fonctionnalités à venir:
-            
-            - Gestion des bons de commande
-            - Suivi des factures fournisseurs
-            - Analyse des coûts d'approvisionnement
-            - Rapports de performance fournisseurs
-            """)
+    try:
+        if st.session_state.selected_app == "REFERENCE":
+            try:
+                # Try both import methods to handle different deployment structures
+                try:
+                    import bq_ref
+                except ImportError:
+                    from pages import bq_ref
+                bq_ref.app()
+            except Exception as e:
+                st.error(f"Error loading REFERENCE module: {str(e)}")
+                st.info("Check that bq_ref.py is properly placed in the root directory or in a 'pages' folder.")
+        
+        elif st.session_state.selected_app == "BANQUE":
+            try:
+                try:
+                    import bq
+                except ImportError:
+                    from pages import bq
+                bq.app()
+            except Exception as e:
+                st.error(f"Error loading BANQUE module: {str(e)}")
+                st.info("Check that bq.py is properly placed in the root directory or in a 'pages' folder.")
+        
+        elif st.session_state.selected_app == "ACHATS":
+            try:
+                try:
+                    import achats
+                except ImportError:
+                    from pages import achats
+                achats.app()
+            except ImportError:
+                st.info("Module 'achats' n'est pas encore disponible. L'application est en cours de développement.")
+                
+                # Placeholder content for ACHATS module
+                st.markdown("""
+                ### Fonctionnalités à venir:
+                
+                - Gestion des bons de commande
+                - Suivi des factures fournisseurs
+                - Analyse des coûts d'approvisionnement
+                - Rapports de performance fournisseurs
+                """)
+            except Exception as e:
+                st.error(f"Error loading ACHATS module: {str(e)}")
+                st.info("Une erreur s'est produite lors du chargement du module ACHATS.")
+    
+    except Exception as e:
+        st.error(f"Une erreur inattendue s'est produite: {str(e)}")
+        import traceback
+        st.error(traceback.format_exc())
