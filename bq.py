@@ -89,7 +89,7 @@ def app():
                     # Rule 1: RAW_TIER starts with "FRUL" (case-insensitive)
                     raw_df["RAW_TIER"].astype(str).str.upper().str.startswith("FRUL", na=False),
                     # Rule 2: RAW_FILTER starts with "SALAIRE" or NAT == "PAIE"
-                    (raw_df["RAW_REF"].astype(str).str.upper().str.startswith("CONG", na=False)) | (raw_df["RAW_REF"] == "PAIE"),
+                    (raw_df["RAW_REF"].astype(str).str.upper().str.startswith("CONGÉ", na=False)) | (raw_df["RAW_REF"] == "PAIE"),
                     # Rule 3: RAW_TIER == "CNSS" or NAT == "COTIS"
                     (raw_df["RAW_TIER"].astype(str).str.upper() == "CNSS") | (raw_df["RAW_REF"] == "COTIS"),
                     # Rule 4: RAW_REF == FRAIS
