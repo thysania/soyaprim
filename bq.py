@@ -107,7 +107,7 @@ def app():
                         "KPA", "lab", "lvs", "MAMDA", "marjan", "ministre", "MOGES", "MUST", "ORANGE", 
                         "PLANEX", "pneumatique", "PRINT", "REDAL", "relanc", "REFRI", "SANITAIRE", 
                         "secola", "SMURF", "smpce", "star dec", "TEMARA", "trois", "WAFABAIL", 
-                        "intra", "abcr", "boulon", "bmj", "Khadamat", "TRANS", "AFROUKH"
+                        "intra", "abcr", "boulon", "bmj", "Khadamat", "TRANS", "AFROUKH", "onssa"
                     ]), case=False, na=False),
                     # Rule 7: RAW_REF == "IR"
                     (raw_df["RAW_REF"] == "IR"),
