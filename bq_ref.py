@@ -66,7 +66,7 @@ def app():
                                 "trans", "redal", "refri", "secola", "dakar", "attijari", "temara", "kpa", "easy", 
                                 "ajyad", "bioci", "must", "saidou", "bounmer", "pharmaci", "boutiq", "print", "moges", "fourni", "bois", 
                                 "planex", "smurf", "asswak", "autor", "omnium", "dakkar", "idealalu", 
-                                "deco new", "abcr", "azrou complexes", "da graph", "durofloor", "hamri tissus", "electroplanet",
+                                "deco new", "abcr", "azrou complexes", "da graph", "durofloor", "Tissus", "electroplanet",
                                 "forges de bazas", "globus", "environnement", "lab", "intra", "inwi", "INWI",
                                 "khadamat", "kitea", "trois", "lvs", "marjan", "ministre", "muneris", 
                                 "consilia", "ola", "conseil", "pneumatique", "incendie", "sanitaire", 
