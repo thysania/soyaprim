@@ -93,9 +93,10 @@ def app():
                     (raw_df["RAW_TIER"].astype(str).str.upper() == "CNSS") | (raw_df["RAW_REF"] == "COTIS"),
                     # Rule 4: RAW_REF == FRAIS
                     (raw_df["RAW_REF"] == "FRAIS") | raw_df["RAW_LIB"].astype(str).str.upper().str.startswith("FRAIS", na=False),
-                    # Rule 5: RAW_LIB starts with "diff" or contains "change"
-                    raw_df["RAW_LIB"].astype(str).str.upper().str.contains("DIFF", na=False) | 
-                    raw_df["RAW_LIB"].astype(str).str.upper().str.contains("CHANGE", na=False),
+                    # Rule 5: RAW_REF equals PERTE
+                    (raw_df["RAW_REF"] == "PERTE"),
+                    # Rule 5.1: RAW_REF equals GAIN
+                    (raw_df["RAW_REF"] == "GAIN"),
                     # Rule 6: NAT == "FELAH" or TIERS contains specified strings
                     (raw_df["RAW_REF"] == "FELAH") | 
                     raw_df["TIERS"].astype(str).str.contains("|".join([
@@ -121,6 +122,7 @@ def app():
                     4441000000,  # Rule 3
                     6147300000,  # Rule 4
                     6331000000,  # Rule 5
+                    7331000000,  # Rule 5.1
                     4411000000,  # Rule 6
                     4452500000,  # Rule 7
                     4458110100,  # Rule 8
