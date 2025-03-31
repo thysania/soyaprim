@@ -106,7 +106,7 @@ def app():
                         "globus", "hamri tissus", "ideal", "inwi", "incendie", "khadamat", "kitea", 
                         "KPA", "lab", "lvs", "MAMDA", "MARAHIL", "marjan", "ministre", "MOGES", "MUST", "ORANGE", 
                         "PLANEX", "pneumatique", "PRINT", "REDAL", "relanc", "REFRI", "SANITAIRE", 
-                        "secola", "SMURF", "smpce", "SOLUTIONS", "star dec", "TEMARA", "trois", "WAFABAIL", 
+                        "secola", "SMURF", "smpce", "SOLUTIONS", "STARDEC", "TEMARA", "trois", "WAFABAIL", 
                         "intra", "abcr", "boulon", "bmj", "Khadamat", "TRANS", "AFROUKH", "onssa", "ZIMBA", 
                         "STORES", "GOLD", "COMPLEX", "LEGNO", "TISSUS", "DAKAR", "PROJET", "D.A"
                     ]), case=False, na=False),
