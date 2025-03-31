@@ -46,14 +46,6 @@ def app():
             # Create data validation
             dv = DataValidation(type="list", formula1=f'"{",".join(options)}"', allow_blank=True)
             ws.add_data_validation(dv)
-            
-            # Add headers with formatting
-            headers = ["DATE", "RAW_LIB", "RAW_TIER", "REF", "DEBIT", "CREDIT"]
-            for col_idx, header in enumerate(headers, 1):
-                cell = ws.cell(row=1, column=col_idx)
-                cell.value = header
-                cell.fill = PatternFill(start_color="2596BE", end_color="2596BE", fill_type="solid")
-                cell.font = Font(bold=True, color="FFFFFF")  # White text
                 
             # Process each row with explicit row indexing to avoid blank rows
             row_idx = 2  # Start from row 2 (after headers)
