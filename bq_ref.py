@@ -48,7 +48,7 @@ def app():
             ws.add_data_validation(dv)
                 
             # Process each row with explicit row indexing to avoid blank rows
-            row_idx = 2  # Start from row 2 (after headers)
+            row_idx = 1  # Start from row 2 (after headers)
             for idx, row in df.iterrows():
                 # Convert to string and clean
                 if pd.isna(original_ref_values[idx]):
