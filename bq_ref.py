@@ -80,12 +80,10 @@ def app():
                     elif row["RAW_TIER"] == "dgi" and row["DEBIT"] > 50000:
                         ref = "IR"
                     elif "change" in row["RAW_LIB"]:
-                        if not row["CREDIT"]:  # CREDIT is empty
+                        if row["DEBIT"] > row["CREDIT"]:
                             ref = "PERTE"
-                        elif not row["DEBIT"]:  # DEBIT is empty
-                            ref = "GAIN"
                         else:
-                            ref = "PERTE"
+                            ref = "GAIN"
                     else:
                         ref = ""  # Empty for dropdown
                 else:
