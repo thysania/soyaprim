@@ -100,7 +100,7 @@ def app():
                     # Rule 6: NAT == "FELAH" or TIERS contains specified strings
                     (raw_df["RAW_REF"] == "FELAH") | 
                     raw_df["TIERS"].astype(str).str.contains("|".join([
-                        "AJYAD", "ASSWAK", "ATTIJARI", "AUTOROUTE", "BIOCI", "BOIS", "BOUNMER", 
+                        "AJYAD", "ASWAK", "ATTIJARI", "AUTOROUTE", "BIOCI", "BOIS", "BOUNMER", 
                         "BRICO", "CABINET", "CARREF", "consilia", "conseil", "da graph", "deco new", 
                         "durofloor", "electroplanet", "environnement", "FOURNI", "forges de bazas", 
                         "globus", "hamri tissus", "ideal", "inwi", "incendie", "khadamat", "kitea", 
