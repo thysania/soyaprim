@@ -204,7 +204,7 @@ def app():
                 st.download_button(
                     label="Télécharger le fichier",
                     data=output,
-                    file_name="import_awb_{mmyy}.xlsx",
+                    file_name="import_awb.xlsx",
                     mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
                 )
     
