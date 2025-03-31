@@ -18,7 +18,6 @@ def app():
             # Read raw data (Sheet 1) and mappings (Sheet 2)
             raw_df = pd.read_excel(uploaded_file, sheet_name=0, header=None)
             mappings_df = pd.read_excel(uploaded_file, sheet_name=1, header=None)  # Assuming no headers in Sheet 2
-            date_value = raw_df.iloc[0, 0]
     
             # Validate the number of columns in the raw file
             if raw_df.shape[1] != 7:
@@ -200,6 +199,7 @@ def app():
                         cell.fill = PatternFill(start_color="2596BE", end_color="2596BE", fill_type="solid")
                         cell.font = Font(bold=True, color="FFFFFF")  # White text for better contrast
                     # If date_value is already a datetime object:
+                    date_value = raw_df.iloc[0, 0]
                     def get_mmyy_from_a1(date_value):
                         # Handle different potential date formats
                         if isinstance(date_value, dt.datetime):
