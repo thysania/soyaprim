@@ -17,7 +17,7 @@ def app():
             # Read raw data (Sheet 1) and mappings (Sheet 2)
             raw_df = pd.read_excel(uploaded_file, sheet_name=0, header=None)
             mappings_df = pd.read_excel(uploaded_file, sheet_name=1, header=None)  # Assuming no headers in Sheet 2
-            date_value = df.iloc[0, 0]
+            date_value = raw_df.iloc[0, 0]
     
             # Validate the number of columns in the raw file
             if raw_df.shape[1] != 7:
