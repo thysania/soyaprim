@@ -198,7 +198,7 @@ def app():
                         cell.font = Font(bold=True, color="FFFFFF")  # White text for better contrast
                 
                 output.seek(0)
-    
+                st.success("Votre fichier est prêt !")
                 st.download_button(
                     label="Télécharger le fichier",
                     data=output,
