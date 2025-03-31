@@ -80,7 +80,10 @@ def app():
                     elif row["RAW_TIER"] == "dgi" and row["DEBIT"] > 50000:
                         ref = "IR"
                     elif "change" in row["RAW_LIB"]:
-                        if row["DEBIT"] > row["CREDIT"]:
+                        debit_val = row["DEBIT"] if pd.notna(row["DEBIT"]) else 0
+                        credit_val = row["CREDIT"] if pd.notna(row["CREDIT"]) else 0
+                        
+                        if debit_val > credit_val:
                             ref = "PERTE"
                         else:
                             ref = "GAIN"
