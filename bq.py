@@ -106,9 +106,9 @@ def app():
                         "globus", "hamri tissus", "ideal", "inwi", "incendie", "khadamat", "kitea", 
                         "KPA", "lab", "lvs", "MAMDA", "marjan", "ministre", "MOGES", "MUST", "ORANGE", 
                         "PLANEX", "pneumatique", "PRINT", "REDAL", "relanc", "REFRI", "SANITAIRE", 
-                        "secola", "SMURF", "smpce", "star dec", "TEMARA", "trois", "WAFABAIL", 
+                        "secola", "SMURF", "smpce", "SOLUTIONS", "star dec", "TEMARA", "trois", "WAFABAIL", 
                         "intra", "abcr", "boulon", "bmj", "Khadamat", "TRANS", "AFROUKH", "onssa", "ZIMBA", 
-                        "STORES", "GOLD", "COMPLEX", "LEGNO"
+                        "STORES", "GOLD", "COMPLEX", "LEGNO", "TISSUS"
                     ]), case=False, na=False),
                     # Rule 7: RAW_REF == "IR"
                     (raw_df["RAW_REF"] == "IR"),
