@@ -102,9 +102,9 @@ def app():
                     raw_df["TIERS"].astype(str).str.contains("|".join([
                         "AJYAD", "ASWAK", "ATTIJARI", "AUTOROUTE", "BIOCI", "BOIS", "BOUNMER", 
                         "BRICO", "CABINET", "CARREF", "consilia", "conseil", "da graph", "deco new", 
-                        "durofloor", "electroplanet", "environnement", "FOURNI", "forges de bazas", 
+                        "durofloor", "electroplanet", "environnement", "FOURNI", "BAZAS", 
                         "globus", "hamri tissus", "ideal", "inwi", "incendie", "khadamat", "kitea", 
-                        "KPA", "lab", "lvs", "MAMDA", "marjan", "ministre", "MOGES", "MUST", "ORANGE", 
+                        "KPA", "lab", "lvs", "MAMDA", "MARAHIL", "marjan", "ministre", "MOGES", "MUST", "ORANGE", 
                         "PLANEX", "pneumatique", "PRINT", "REDAL", "relanc", "REFRI", "SANITAIRE", 
                         "secola", "SMURF", "smpce", "SOLUTIONS", "star dec", "TEMARA", "trois", "WAFABAIL", 
                         "intra", "abcr", "boulon", "bmj", "Khadamat", "TRANS", "AFROUKH", "onssa", "ZIMBA", 
