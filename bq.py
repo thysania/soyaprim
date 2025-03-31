@@ -180,11 +180,11 @@ def app():
                 # Download button for the result
                 output = BytesIO()
                 with pd.ExcelWriter(output, engine="openpyxl") as writer:
-                    result_df.to_excel(writer, index=False, sheet_name="IMPORT_AWB", na_rep="")
+                    result_df.to_excel(writer, index=False, sheet_name="Données Transformées", na_rep="")
                     
                     # Get the worksheet to apply formatting
                     workbook = writer.book
-                    worksheet = writer.sheets["IMPORT_AWB"]
+                    worksheet = writer.sheets["Données Transformées"]
                     
                     # Auto-fit columns
                     for col_num, column in enumerate(result_df.columns, 1):
