@@ -87,7 +87,7 @@ def app():
                     (raw_df["CA"] == 1),
                     # Rule 1: RAW_TIER starts with "FRUL" (case-insensitive)
                     raw_df["RAW_TIER"].astype(str).str.upper().str.startswith("FRUL", na=False),
-                    # Rule 2: RAW_FILTER starts with "SALAIRE" or NAT == "PAIE" (assuming RAW_FILTER is a typo for another column)
+                    # Rule 2: RAW_FILTER starts with "SALAIRE" or NAT == "PAIE"
                     (raw_df["RAW_REF"].astype(str).str.upper().str.startswith("SALAIRE", na=False)) | (raw_df["RAW_REF"] == "PAIE"),
                     # Rule 3: RAW_TIER == "CNSS" or NAT == "COTIS"
                     (raw_df["RAW_TIER"].astype(str).str.upper() == "CNSS") | (raw_df["RAW_REF"] == "COTIS"),
@@ -100,10 +100,14 @@ def app():
                     # Rule 6: NAT == "FELAH" or TIERS contains specified strings
                     (raw_df["RAW_REF"] == "FELAH") | 
                     raw_df["TIERS"].astype(str).str.contains("|".join([
-                        "ORANGE", "MAMDA", "ONSSA", "ASWAK", "BRICO", "CARREF", "WAFABAIL", 
-                        "CABINET", "TRANS", "REDAL", "REFRI", "SECOLA", "DAKAR", "ATTIJARI", 
-                        "TEMARA", "KPA", "EASY", "AJYAD", "BIOCI", "MUST", "SAIDOU", 
-                        "BOUNMER", "PRINT", "MOGES", "FOURNI", "BOIS", "PLANEX", "SMURF", "ASSWAK", "AUTOROUTE", "inwi", "deco new", "ideal", "bmj", "relanc"
+                        "AJYAD", "ASSWAK", "ATTIJARI", "AUTOROUTE", "BIOCI", "BOIS", "BOUNMER", 
+                        "BRICO", "CABINET", "CARREF", "consilia", "conseil", "da graph", "deco new", 
+                        "durofloor", "electroplanet", "environnement", "FOURNI", "forges de bazas", 
+                        "globus", "hamri tissus", "ideal", "inwi", "incendie", "khadamat", "kitea", 
+                        "KPA", "lab", "lvs", "MAMDA", "marjan", "ministre", "MOGES", "MUST", "ORANGE", 
+                        "PLANEX", "pneumatique", "PRINT", "REDAL", "relanc", "REFRI", "SANITAIRE", 
+                        "secola", "SMURF", "smpce", "star dec", "TEMARA", "trois", "WAFABAIL", 
+                        "intra", "abcr", "boulon", "bmj", "Khadamat"
                     ]), case=False, na=False),
                     # Rule 7: RAW_REF == "IR"
                     (raw_df["RAW_REF"] == "IR"),
