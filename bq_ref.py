@@ -60,18 +60,25 @@ def app():
                                 "bouzidi", "brahim", "derouach", "hatta", "benda", "khalid", "amine", "hamid", 
                                 "mohammed", "mohamed", "sliman", "benbo", "dkhail", "charrad", "bouzid", "lehcen", 
                                 "acha", "akil", "benz", "hassan", "hadri", "kharmo", "jilali", "houcin", "fellaha", 
-                                "miloud", "asmaa", "bouchta", "ahmed"]):
+                                "miloud", "asmaa", "bouchta", "ahmed", "afroukh", "znagui"]):
                         ref = "FELAH"
                     elif any(kw in row["RAW_TIER"] for kw in ["orange", "mamda", "onssa", "aswak", "brico", "carref", "wafabail", "cabinet", 
                                 "trans", "redal", "refri", "secola", "dakar", "attijari", "temara", "kpa", "easy", 
                                 "ajyad", "bioci", "must", "saidou", "bounmer", "pharmaci", "boutiq", "print", "moges", "fourni", "bois", 
-                                "planex", "smurf", "asswak", "autor", "omnium", "dakkar", "idealalu", "deco new"]):
+                                "planex", "smurf", "asswak", "autor", "omnium", "dakkar", "idealalu", 
+                                "deco new", "abcr", "azrou complexes", "da graph", "durofloor", "hamri tissus", "electroplanet",
+                                "forges de bazas", "globus", "environnement", "lab", "intra", "inwi", 
+                                "khadamat", "kitea", "trois", "lvs", "marjan", "ministre", "muneris", 
+                                "consilia", "ola", "conseil", "pneumatique", "incendie", "sanitaire", 
+                                "smpce", "star dec", "boulon"]):
                         ref = "FAC"
                     elif any(kw in row["RAW_LIB"] or kw in row["RAW_TIER"] for kw in ["frais", "commis", "pmeplus"]):
                         ref = "FRAIS"
                     elif row["RAW_TIER"] == "cnss":
                         ref = "COTIS"
                     elif "salaire" in row["RAW_TIER"]:
+                        ref = "PAIE"
+                    elif "cong" in row["RAW_REF"]:
                         ref = "PAIE"
                     elif "ettoumy" in row["RAW_TIER"]:
                         ref = "PAIE"
