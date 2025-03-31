@@ -17,6 +17,7 @@ def app():
             # Read raw data (Sheet 1) and mappings (Sheet 2)
             raw_df = pd.read_excel(uploaded_file, sheet_name=0, header=None)
             mappings_df = pd.read_excel(uploaded_file, sheet_name=1, header=None)  # Assuming no headers in Sheet 2
+            date_value = df.iloc[0, 0]
     
             # Validate the number of columns in the raw file
             if raw_df.shape[1] != 7:
@@ -183,7 +184,7 @@ def app():
                     
                     # Get the worksheet to apply formatting
                     workbook = writer.book
-                    worksheet = writer.sheets["Données Transformées"]
+                    worksheet = writer.sheets["IMPORT_AWB"]
                     
                     # Auto-fit columns
                     for col_num, column in enumerate(result_df.columns, 1):
@@ -197,13 +198,33 @@ def app():
                     for cell in worksheet[1]:
                         cell.fill = PatternFill(start_color="2596BE", end_color="2596BE", fill_type="solid")
                         cell.font = Font(bold=True, color="FFFFFF")  # White text for better contrast
+                    # If date_value is already a datetime object:
+                    def get_mmyy_from_a1(date_value):
+                        # Handle different potential date formats
+                        if isinstance(date_value, dt.datetime):
+                            mmyy = date_value.strftime("%m%y")
+                        elif isinstance(date_value, str):
+                            # Try to parse the string into a datetime
+                            try:
+                                date_obj = pd.to_datetime(date_value)
+                                mmyy = date_obj.strftime("%m%y")
+                            except:
+                                # If parsing fails, return a default value or handle accordingly
+                                mmyy = "0000"
+                        else:
+                            mmyy = "0000"
+                        
+                        return mmyy
+                    
+                    # Now get the MMYY string from A1
+                    mmyy = get_mmyy_from_a1(date_value)
                 
                 output.seek(0)
                 st.success("Votre fichier est prêt !")
                 st.download_button(
                     label="Télécharger le fichier",
                     data=output,
-                    file_name="import_awb.xlsx",
+                    file_name="import_awb_{mmyy}.xlsx",
                     mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
                 )
     
