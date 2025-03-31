@@ -108,7 +108,7 @@ def app():
                         "PLANEX", "pneumatique", "PRINT", "REDAL", "relanc", "REFRI", "SANITAIRE", 
                         "secola", "SMURF", "smpce", "SOLUTIONS", "star dec", "TEMARA", "trois", "WAFABAIL", 
                         "intra", "abcr", "boulon", "bmj", "Khadamat", "TRANS", "AFROUKH", "onssa", "ZIMBA", 
-                        "STORES", "GOLD", "COMPLEX", "LEGNO", "TISSUS", "DAKAR"
+                        "STORES", "GOLD", "COMPLEX", "LEGNO", "TISSUS", "DAKAR", "PROJET", "D.A"
                     ]), case=False, na=False),
                     # Rule 7: RAW_REF == "IR"
                     (raw_df["RAW_REF"] == "IR"),
