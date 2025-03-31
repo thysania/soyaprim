@@ -198,27 +198,6 @@ def app():
                     for cell in worksheet[1]:
                         cell.fill = PatternFill(start_color="2596BE", end_color="2596BE", fill_type="solid")
                         cell.font = Font(bold=True, color="FFFFFF")  # White text for better contrast
-                    # If date_value is already a datetime object:
-                    date_value = raw_df.iloc[0, 0]
-                    def get_mmyy_from_a1(date_value):
-                        # Handle different potential date formats
-                        if isinstance(date_value, dt.datetime):
-                            mmyy = date_value.strftime("%m%y")
-                        elif isinstance(date_value, str):
-                            # Try to parse the string into a datetime
-                            try:
-                                date_obj = pd.to_datetime(date_value)
-                                mmyy = date_obj.strftime("%m%y")
-                            except:
-                                # If parsing fails, return a default value or handle accordingly
-                                mmyy = "0000"
-                        else:
-                            mmyy = "0000"
-                        
-                        return mmyy
-                    
-                    # Now get the MMYY string from A1
-                    mmyy = get_mmyy_from_a1(date_value)
                 
                 output.seek(0)
                 st.success("Votre fichier est prêt !")
