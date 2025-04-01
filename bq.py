@@ -181,7 +181,7 @@ def app():
                 # Create a copy of result_df for the pivot table
                 result_df_for_pivot = result_df.copy()
                 # Replace NaN in CPT with "Non classé"
-                result_df_for_pivot["CPT"] = result_df_for_pivot["CPT"].fillna("Non classé")
+                result_df_for_pivot["CPT"] = result_df_for_pivot["CPT"].fillna("Vide")
                 
                 # Create pivot table with CPT in rows, LIB as second level in rows, and totals
                 pivot_df = pd.pivot_table(
