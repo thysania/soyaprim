@@ -174,13 +174,16 @@ def app():
                 result_df = result_df.drop(columns=["DATE_SORT"])  # Remove the sorting column
 
                 # Create the pivot table
+                result_df_for_pivot = result_df.copy()
+                result_df_for_pivot['CPT'] = result_df_for_pivot['CPT'].fillna('Non Classé')
                 pivot_df = pd.pivot_table(
                     result_df,
                     values=['DEBIT', 'CREDIT'],
                     index=['CPT', 'LIB'],
                     aggfunc='sum'
                 )
-    
+                pivot_df['SOLDE'] = pivot_df['DEBIT'] - pivot_df['CREDIT']
+                
                 # Show preview of the result
                 st.write("### Aperçu des Données Transformées")
                 st.dataframe(result_df.head())
