@@ -172,54 +172,79 @@ def app():
                 result_df["DATE_SORT"] = pd.to_datetime(result_df["DATE"], format="%d/%m/%Y")
                 result_df = result_df.sort_values(by="DATE_SORT", ascending=True)
                 result_df = result_df.drop(columns=["DATE_SORT"])  # Remove the sorting column
-
-                # Create the pivot table
-                result_df_for_pivot = result_df.copy()
-                result_df_for_pivot['CPT'] = result_df_for_pivot['CPT'].fillna('Non Classé')
-                pivot_df = pd.pivot_table(
-                    result_df,
-                    values=['DEBIT', 'CREDIT'],
-                    index=['CPT', 'LIB'],
-                    aggfunc='sum'
-                )
-                pivot_df['SOLDE'] = pivot_df['DEBIT'] - pivot_df['CREDIT']
-                
+    
                 # Show preview of the result
                 st.write("### Aperçu des Données Transformées")
                 st.dataframe(result_df.head())
+                
+                # Create pivot table for the second sheet
+                # Create a copy of result_df for the pivot table
+                result_df_for_pivot = result_df.copy()
+                # Replace NaN in CPT with "Non classé"
+                result_df_for_pivot["CPT"] = result_df_for_pivot["CPT"].fillna("Non classé")
+                
+                # Create pivot table with CPT in rows, LIB as second level in rows, and totals
+                pivot_df = pd.pivot_table(
+                    result_df_for_pivot,
+                    values=["DEBIT", "CREDIT"],
+                    index=["CPT", "LIB"],
+                    aggfunc="sum",
+                    margins=True,
+                    margins_name="Total"
+                )
     
                 # Download button for the result
                 output = BytesIO()
                 with pd.ExcelWriter(output, engine="openpyxl") as writer:
+                    # Write first sheet - main data
                     result_df.to_excel(writer, index=False, sheet_name="Données Transformées", na_rep="")
+                    
+                    # Write second sheet - pivot table
                     pivot_df.to_excel(writer, sheet_name="Détails Comptes")
-                    # Get the worksheet to apply formatting
+                    
+                    # Get the worksheets to apply formatting
                     workbook = writer.book
-                    worksheet = writer.sheets["Données Transformées"]
+                    main_sheet = writer.sheets["Données Transformées"]
                     pivot_sheet = writer.sheets["Détails Comptes"]
+                    
+                    # Format main sheet
                     # Auto-fit columns
                     for col_num, column in enumerate(result_df.columns, 1):
                         column_width = max(
                             result_df[column].astype(str).map(len).max(),  # Width of the data
                             len(str(column))  # Width of the header
                         ) + 2  # Add a little extra space
-                        worksheet.column_dimensions[get_column_letter(col_num)].width = column_width
-
-                    for col_num, column in enumerate(pivot_df.columns.values, 1):
-                            column_width = max(
-                                len(str(column[0])) + len(str(column[1])),  # Headers can be tuples in pivot tables
-                                15  # Minimum width
-                            )
-                            pivot_sheet.column_dimensions[get_column_letter(col_num)].width = column_width
-                        
+                        main_sheet.column_dimensions[get_column_letter(col_num)].width = column_width
+                    
                     # Format headers with color #2596be
-                    for cell in worksheet[1]:
+                    for cell in main_sheet[1]:
                         cell.fill = PatternFill(start_color="2596BE", end_color="2596BE", fill_type="solid")
                         cell.font = Font(bold=True, color="FFFFFF")  # White text for better contrast
-                        
+                    
+                    # Format pivot sheet
+                    # Format headers with the same color
                     for cell in pivot_sheet[1]:
                         cell.fill = PatternFill(start_color="2596BE", end_color="2596BE", fill_type="solid")
                         cell.font = Font(bold=True, color="FFFFFF")
+                    
+                    # Auto-fit columns for pivot table
+                    for col_num, _ in enumerate(pivot_df.columns.values, 3):  # Start at column C (3) due to index columns
+                        column_width = 15  # Fixed width for value columns
+                        pivot_sheet.column_dimensions[get_column_letter(col_num)].width = column_width
+                    
+                    # Make index columns wider
+                    pivot_sheet.column_dimensions['A'].width = 20  # CPT column
+                    pivot_sheet.column_dimensions['B'].width = 50  # LIB column
+                    
+                    # Format total rows with light gray background
+                    for row in pivot_sheet.iter_rows(min_row=2, max_row=pivot_sheet.max_row):
+                        # Check if this is a total row (either CPT total or grand total)
+                        if row[0].value == "Total" or (row[1].value == "Total" and row[0].value is not None):
+                            fill = PatternFill(start_color="E0E0E0", end_color="E0E0E0", fill_type="solid")
+                            font = Font(bold=True)
+                            for cell in row:
+                                cell.fill = fill
+                                cell.font = font
                 
                 output.seek(0)
                 st.success("Votre fichier est prêt !")
