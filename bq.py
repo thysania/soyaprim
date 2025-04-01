@@ -233,8 +233,8 @@ def app():
                         pivot_sheet.column_dimensions[get_column_letter(col_num)].width = column_width
                     
                     # Make index columns wider
-                    pivot_sheet.column_dimensions['A'].width = 20  # CPT column
-                    pivot_sheet.column_dimensions['B'].width = 50  # LIB column
+                    pivot_sheet.column_dimensions['A'].width = 15  # CPT column
+                    pivot_sheet.column_dimensions['B'].width = 60  # LIB column
                     
                     # Format total rows with light gray background
                     for row in pivot_sheet.iter_rows(min_row=2, max_row=pivot_sheet.max_row):
