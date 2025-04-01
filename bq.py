@@ -202,14 +202,14 @@ def app():
                 output = BytesIO()
                 with pd.ExcelWriter(output, engine="openpyxl") as writer:
                     # Write first sheet - main data
-                    result_df.to_excel(writer, index=False, sheet_name="Données Transformées", na_rep="")
+                    result_df.to_excel(writer, index=False, sheet_name="Import AWB", na_rep="")
                     
                     # Write second sheet - pivot table
                     pivot_df.to_excel(writer, sheet_name="Détails Comptes")
                     
                     # Get the worksheets to apply formatting
                     workbook = writer.book
-                    main_sheet = writer.sheets["Données Transformées"]
+                    main_sheet = writer.sheets["Import AWB"]
                     pivot_sheet = writer.sheets["Détails Comptes"]
                     
                     # Format main sheet
