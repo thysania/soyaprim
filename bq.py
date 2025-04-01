@@ -215,8 +215,8 @@ def app():
                         cell.font = Font(bold=True, color="FFFFFF")  # White text for better contrast
                         
                     for cell in pivot_sheet[1]:
-                    cell.fill = PatternFill(start_color="2596BE", end_color="2596BE", fill_type="solid")
-                    cell.font = Font(bold=True, color="FFFFFF")
+                        cell.fill = PatternFill(start_color="2596BE", end_color="2596BE", fill_type="solid")
+                        cell.font = Font(bold=True, color="FFFFFF")
                 
                 output.seek(0)
                 st.success("Votre fichier est prêt !")
