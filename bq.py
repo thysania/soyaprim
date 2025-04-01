@@ -172,6 +172,14 @@ def app():
                 result_df["DATE_SORT"] = pd.to_datetime(result_df["DATE"], format="%d/%m/%Y")
                 result_df = result_df.sort_values(by="DATE_SORT", ascending=True)
                 result_df = result_df.drop(columns=["DATE_SORT"])  # Remove the sorting column
+
+                # Create the pivot table
+                pivot_df = pd.pivot_table(
+                    result_df,
+                    values=['DEBIT', 'CREDIT'],
+                    index=['CPT', 'LIB'],
+                    aggfunc='sum'
+                )
     
                 # Show preview of the result
                 st.write("### Aperçu des Données Transformées")
@@ -181,11 +189,11 @@ def app():
                 output = BytesIO()
                 with pd.ExcelWriter(output, engine="openpyxl") as writer:
                     result_df.to_excel(writer, index=False, sheet_name="Données Transformées", na_rep="")
-                    
+                    pivot_df.to_excel(writer, sheet_name="Détails Comptes")
                     # Get the worksheet to apply formatting
                     workbook = writer.book
                     worksheet = writer.sheets["Données Transformées"]
-                    
+                    pivot_sheet = writer.sheets["Détails Comptes"]
                     # Auto-fit columns
                     for col_num, column in enumerate(result_df.columns, 1):
                         column_width = max(
@@ -193,11 +201,22 @@ def app():
                             len(str(column))  # Width of the header
                         ) + 2  # Add a little extra space
                         worksheet.column_dimensions[get_column_letter(col_num)].width = column_width
-                    
+
+                    for col_num, column in enumerate(pivot_df.columns.values, 1):
+                            column_width = max(
+                                len(str(column[0])) + len(str(column[1])),  # Headers can be tuples in pivot tables
+                                15  # Minimum width
+                            )
+                            pivot_sheet.column_dimensions[get_column_letter(col_num)].width = column_width
+                        
                     # Format headers with color #2596be
                     for cell in worksheet[1]:
                         cell.fill = PatternFill(start_color="2596BE", end_color="2596BE", fill_type="solid")
                         cell.font = Font(bold=True, color="FFFFFF")  # White text for better contrast
+                        
+                    for cell in pivot_sheet[1]:
+                    cell.fill = PatternFill(start_color="2596BE", end_color="2596BE", fill_type="solid")
+                    cell.font = Font(bold=True, color="FFFFFF")
                 
                 output.seek(0)
                 st.success("Votre fichier est prêt !")
