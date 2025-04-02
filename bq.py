@@ -183,9 +183,12 @@ def app():
                 st.write("### Aperçu des Données Transformées")
                 st.dataframe(result_df.head())
                 
-                # Create a flattened version of the data for the pivot table instead of using pivot_table
-                # This will allow more control over the formatting
+                # Create a flattened version of the data for the pivot table
                 result_df_for_pivot = result_df.copy()
+                
+                # Ensure DEBIT and CREDIT are numeric values
+                result_df_for_pivot["DEBIT"] = pd.to_numeric(result_df_for_pivot["DEBIT"], errors='coerce').fillna(0)
+                result_df_for_pivot["CREDIT"] = pd.to_numeric(result_df_for_pivot["CREDIT"], errors='coerce').fillna(0)
                 
                 # Replace NaN in CPT with "Vide" string
                 result_df_for_pivot["CPT"] = result_df_for_pivot["CPT"].fillna("Vide")
@@ -201,8 +204,9 @@ def app():
                     "DEBIT": "sum",
                     "CREDIT": "sum"
                 }).reset_index()
-                for index, row in cpt_totals.iterrows():
-                    cpt_totals.at[index, "LIB"] = "Total"
+                
+                # Add "Total" to LIB column for the CPT subtotals
+                cpt_totals["LIB"] = "Total"
                 
                 # Add grand total
                 grand_total = pd.DataFrame({
@@ -212,10 +216,19 @@ def app():
                     "CREDIT": [result_df_for_pivot["CREDIT"].sum()]
                 })
                 
-                # Combine all data
+                # Combine all data - First grouped data, then CPT totals, then grand total
                 combined_data = pd.concat([grouped_data, cpt_totals, grand_total], ignore_index=True)
                 
-                # Download button for the result
+                # Sort the dataframe - this keeps the rows with the same CPT together
+                # and ensures the "Vide" rows are together as well
+                combined_data = combined_data.sort_values(by=["CPT", "LIB"])
+                
+                # Move Total CPT to the end
+                total_row = combined_data[combined_data["CPT"] == "Total"]
+                combined_data = combined_data[combined_data["CPT"] != "Total"]
+                combined_data = pd.concat([combined_data, total_row], ignore_index=True)
+                
+                # Create Excel file for download
                 output = BytesIO()
                 with pd.ExcelWriter(output, engine="openpyxl") as writer:
                     # Write first sheet - main data
@@ -265,19 +278,24 @@ def app():
                     total_fill = PatternFill(start_color="E0E0E0", end_color="E0E0E0", fill_type="solid")
                     
                     # Apply formatting to pivot sheet rows
-                    current_cpt = None
-                    for row_idx, row in enumerate(pivot_sheet.iter_rows(min_row=2, max_row=pivot_sheet.max_row), 2):
-                        cpt_value = row[0].value
-                        lib_value = row[1].value
+                    # Get a mapping of row values to python indices
+                    cpt_values = [cell.value for cell in pivot_sheet['A'][1:]]  # Skip header
+                    lib_values = [cell.value for cell in pivot_sheet['B'][1:]]  # Skip header
+                    
+                    # Apply formatting to each row
+                    for row_idx in range(2, pivot_sheet.max_row + 1):  # Start from row 2 (after header)
+                        cpt_value = pivot_sheet.cell(row=row_idx, column=1).value
+                        lib_value = pivot_sheet.cell(row=row_idx, column=2).value
                         
                         # Color all rows where CPT is "Vide" with light red
                         if cpt_value == "Vide":
-                            for cell in row:
-                                cell.fill = light_red_fill
+                            for col_idx in range(1, pivot_sheet.max_column + 1):
+                                pivot_sheet.cell(row=row_idx, column=col_idx).fill = light_red_fill
                         
                         # Format total rows
-                        if cpt_value == "Total" or lib_value == "Total":
-                            for cell in row:
+                        if (cpt_value == "Total") or (lib_value == "Total"):
+                            for col_idx in range(1, pivot_sheet.max_column + 1):
+                                cell = pivot_sheet.cell(row=row_idx, column=col_idx)
                                 cell.fill = total_fill
                                 cell.font = Font(bold=True)
                 
