@@ -145,8 +145,8 @@ def app():
                         filter(None, [
                             str(row["RAW_LIB"]).strip() if pd.notna(row["RAW_LIB"]) else None,
                             str(row["RAW_REF"]).strip() if pd.notna(row["RAW_REF"]) else None,
-                            str(row["TIER"]).strip() if pd.notna(row["TIER"]) else (
-                                str(row["RAW_TIERS"]).strip() if pd.notna(row["RAW_TIERS"]) else None
+                            str(row["TIERS"]).strip() if pd.notna(row["TIERS"]) else (
+                                str(row["RAW_TIER"]).strip() if pd.notna(row["RAW_TIER"]) else None
                             )
                         ])
                     ),
