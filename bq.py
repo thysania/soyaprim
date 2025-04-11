@@ -140,7 +140,7 @@ def app():
                     # Rule 9: RAW_REF == "RETENU AVOCAT"
                     (raw_df["RAW_REF"] == "RETENU AVOCAT"),
                     # Rule 10: RAW_TIER contains "SAIDOU"
-                    (raw_df["RAW_TIER"].astype(str).str.upper().str.contains("SAIDOU", na=False))
+                    (raw_df["RAW_TIER"].astype(str).str.upper().str.contains("SAIDOU", na=False)),
                     # Rule 11: RAW_TIER contains "vignette"
                     (raw_df["RAW_TIER"].astype(str).str.upper().str.contains("SVIGNETTE", na=False))
                 ]
