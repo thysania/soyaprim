@@ -142,7 +142,7 @@ def app():
                     # Rule 10: RAW_TIER contains "SAIDOU"
                     (raw_df["RAW_TIER"].astype(str).str.upper().str.contains("SAIDOU", na=False)),
                     # Rule 11: RAW_TIER contains "vignette"
-                    (raw_df["RAW_TIER"].astype(str).str.upper().str.contains("SVIGNETTE", na=False))
+                    (raw_df["RAW_TIER"].astype(str).str.upper().str.contains("VIGNETTE", na=False))
                 ]
     
                 choices = [
