@@ -68,6 +68,7 @@ if uploaded_file is not None:
                     raw_df = pd.concat([raw_df, split_df], ignore_index=True)
 
             # Process TIERS (lookup RAW_TIER as wildcard in mappings sheet)
+            # Replace the existing lookup_tiers function with this corrected version
             def lookup_tiers(row):
                 raw_tier = row["RAW_TIER"]
                 debit = row["DEBIT"]
@@ -92,19 +93,22 @@ if uploaded_file is not None:
                         return "WAFABAIL CONTRAT S0514750 MAP MAGHREB"
                     elif abs(debit_rounded - 20408.17) < 0.01 or abs(debit_rounded - 20139.84) < 0.01:
                         return "WAFABAIL CONTRAT S0514770 MAP MAGHREB"
-                    # If it's Wafabail but doesn't match any specific amount, return generic Wafabail
-                    # Find in mappings as a fallback
-                    matches = mappings_df[mappings_df[0].astype(str).str.contains(str(raw_tier), case=False, na=False)]
-                    if not matches.empty:
-                        return matches.iloc[0, 1]  # Return the first matching value from column 1
-                    return "WAFABAIL"  # Default if no mapping found
+                    else:
+                        # For other Wafabail entries not matching specific amounts
+                        
+                        # Check if there's a mapping first
+                        matches = mappings_df[mappings_df[0].astype(str).str.contains(str(raw_tier), case=False, na=False)]
+                        if not matches.empty:
+                            return matches.iloc[0, 1]  # Return the first matching value from column 1
+                        
+                        # If no mapping found, return generic "WAFABAIL"
+                        return "WAFABAIL"
                 
                 # For all other cases, find rows in mappings_df where the pattern matches RAW_TIER (wildcard)
                 matches = mappings_df[mappings_df[0].astype(str).str.contains(str(raw_tier), case=False, na=False)]
                 if not matches.empty:
                     return matches.iloc[0, 1]  # Return the first matching value from column 1
                 return np.nan
-
             # Apply the lookup_tiers function to each row
             raw_df["TIERS"] = raw_df.apply(lookup_tiers, axis=1)
 
