@@ -68,7 +68,6 @@ if uploaded_file is not None:
                     raw_df = pd.concat([raw_df, split_df], ignore_index=True)
 
             # Process TIERS (lookup RAW_TIER as wildcard in mappings sheet)
-            # Replace the existing lookup_tiers function with this corrected version
             def lookup_tiers(row):
                 raw_tier = row["RAW_TIER"]
                 debit = row["DEBIT"]
@@ -76,33 +75,33 @@ if uploaded_file is not None:
                 if pd.isna(raw_tier):
                     return np.nan
                 
+                # Convert raw_tier to string and lowercase for consistent comparison
+                raw_tier_str = str(raw_tier).lower() if not pd.isna(raw_tier) else ""
+                
                 # Special case for "abdelatif saidou(medecin)"
-                if isinstance(raw_tier, str) and "saidou" in str(raw_tier).lower() and "medecin" in str(raw_tier).lower():
+                if "saidou" in raw_tier_str and "medecin" in raw_tier_str:
                     return "SAIDOU ABDELLATIPH"
                 
                 # Special case for "Wafabail" with specific DEBIT amounts
-                if isinstance(raw_tier, str) and "Wafabail" in str(raw_tier).lower():
+                if "wafabail" in raw_tier_str:
                     # Round to 2 decimal places to ensure exact matching
                     debit_rounded = round(debit, 2)
                     
-                    if abs(debit_rounded - 28780.38) < 0.01:
+                    # Debug print - can be removed in production
+                    # print(f"Wafabail entry found with DEBIT={debit_rounded}")
+                    
+                    # Check specific DEBIT amounts with more precise comparison
+                    if abs(debit_rounded - 28780.38) <= 0.01:
                         return "WAFABAIL CONTRAT S0514740 SMARTEC"
-                    elif abs(debit_rounded - 13790.77) < 0.01:
+                    elif abs(debit_rounded - 13790.77) <= 0.01:
                         return "WAFABAIL CONTRAT S0623820 FORGEZ DE BASAS"
-                    elif abs(debit_rounded - 10204.08) < 0.01:
+                    elif abs(debit_rounded - 10204.08) <= 0.01:
                         return "WAFABAIL CONTRAT S0514750 MAP MAGHREB"
-                    elif abs(debit_rounded - 20408.17) < 0.01 or abs(debit_rounded - 20139.84) < 0.01:
+                    elif abs(debit_rounded - 20408.17) <= 0.01 or abs(debit_rounded - 20139.84) <= 0.01:
                         return "WAFABAIL CONTRAT S0514770 MAP MAGHREB"
                     else:
                         # For other Wafabail entries not matching specific amounts
-                        
-                        # Check if there's a mapping first
-                        matches = mappings_df[mappings_df[0].astype(str).str.contains(str(raw_tier), case=False, na=False)]
-                        if not matches.empty:
-                            return matches.iloc[0, 1]  # Return the first matching value from column 1
-                        
-                        # If no mapping found, return generic "WAFABAIL"
-                        return "WAFABAIL"
+                        return "WAFABAIL"  # Default generic name
                 
                 # For all other cases, find rows in mappings_df where the pattern matches RAW_TIER (wildcard)
                 matches = mappings_df[mappings_df[0].astype(str).str.contains(str(raw_tier), case=False, na=False)]
