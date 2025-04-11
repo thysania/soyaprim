@@ -81,7 +81,7 @@ if uploaded_file is not None:
                     return "SAIDOU ABDELLATIPH"
                 
                 # Special case for "Wafabail" with specific DEBIT amounts
-                if isinstance(raw_tier, str) and "wafabail" in str(raw_tier).lower():
+                if isinstance(raw_tier, str) and "Wafabail" in str(raw_tier).lower():
                     # Round to 2 decimal places to ensure exact matching
                     debit_rounded = round(debit, 2)
                     
