@@ -142,7 +142,9 @@ def app():
                     # Rule 10: RAW_TIER contains "SAIDOU"
                     (raw_df["RAW_TIER"].astype(str).str.upper().str.contains("SAIDOU", na=False)),
                     # Rule 11: RAW_TIER contains "vignette"
-                    (raw_df["RAW_TIER"].astype(str).str.upper().str.contains("VIGNETTE", na=False))
+                    (raw_df["RAW_TIER"].astype(str).str.upper().str.contains("VIGNETTE", na=False)),
+                    # Rule 12: RAW_TIER contains "caisse"
+                    (raw_df["RAW_TIER"].astype(str).str.upper().str.contains("CAISSE", na=False))
                 ]
     
                 choices = [
@@ -158,7 +160,8 @@ def app():
                     4458110100,  # Rule 8
                     4458110200,  # Rule 9
                     4411000000,  # Rule 10
-                    4452110000   # Rule 11
+                    4452110000,  # Rule 11
+                    5115000000   # Rule 12
                 ]
     
                 # Use float type for CPT to support NaN values
