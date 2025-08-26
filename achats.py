@@ -43,7 +43,7 @@ def app():
 
     # Convert data types
         df["Date"] = pd.to_datetime(df["Date"], errors="coerce")  # Set invalid dates as NaT
-        df["TIERS"] = df["TIERS"].astype(str)
+        df["TIERS"] = df["TIERS"].astype(str) + "."
         df["DESIGNATION"] = df["DESIGNATION"].astype(str)
         df["TTC"] = df["TTC"].astype(float)
         df["HT"] = df["HT"].astype(float)
