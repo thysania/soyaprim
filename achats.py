@@ -85,7 +85,7 @@ def app():
     
             # Convert BytesIO to downloadable file
             output.seek(0)
-            st.success("Votre fichier est prêt! 👍")
+            st.success("Votre fichier est prêt! 😎")
             st.download_button(
                 label="Telecharger le fichier",
                 data=output,
